@@ -91,7 +91,7 @@ const StudentSignup = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
               className="space-y-2">
-              <Label htmlFor="uid">Student UID</Label>
+              <Label htmlFor="uid">Roll Number</Label>
               <div className="relative">
                 <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input id="uid" placeholder="U2408001" className="pl-10" value={uid}
