@@ -172,6 +172,9 @@ const StudentsPage = () => {
                   <TableCell className="text-muted-foreground">{student.email}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
+                      <Button variant="ghost" size="icon" onClick={() => navigate(`/admin/students/${student.student_id}`)} title="View Profile">
+                        <Eye className="h-4 w-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" onClick={() => { setEditingStudent(student); setFormOpen(true); }}>
                         <Pencil className="h-4 w-4" />
                       </Button>
