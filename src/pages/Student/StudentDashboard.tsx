@@ -26,6 +26,7 @@ import { useFeePayments } from "@/hooks/useFeePayments";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { generateSemesterReportCard } from "@/lib/reportCardPdf";
 
 function getGradeLabel(marks: number) {
   if (marks >= 90) return "A+";
