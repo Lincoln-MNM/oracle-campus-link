@@ -461,6 +461,7 @@ const StudentDashboard = () => {
             </motion.div>
           </TabsContent>
 
+          <TabsContent value="attendance" className="space-y-4">
             {/* Date filter */}
             <div className="rounded-xl border bg-card p-4 shadow-card">
               <div className="flex flex-wrap items-end gap-4">
