@@ -255,6 +255,7 @@ const StudentDashboard = () => {
           <TabsList className="flex-wrap h-auto gap-1">
             <TabsTrigger value="marks"><ClipboardList className="mr-1 h-3.5 w-3.5" /> Marks</TabsTrigger>
             <TabsTrigger value="report-card"><Download className="mr-1 h-3.5 w-3.5" /> Report Card</TabsTrigger>
+            <TabsTrigger value="timetable"><TableIcon className="mr-1 h-3.5 w-3.5" /> Timetable</TabsTrigger>
             <TabsTrigger value="attendance"><ClipboardCheck className="mr-1 h-3.5 w-3.5" /> Attendance</TabsTrigger>
             <TabsTrigger value="leaves"><FileText className="mr-1 h-3.5 w-3.5" /> Leaves</TabsTrigger>
             <TabsTrigger value="notices"><Megaphone className="mr-1 h-3.5 w-3.5" /> Notices</TabsTrigger>
