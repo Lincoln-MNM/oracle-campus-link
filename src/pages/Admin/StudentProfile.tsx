@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useStudents } from "@/hooks/useStudents";
 import { useMarks } from "@/hooks/useMarks";
 import { useSubjects } from "@/hooks/useSubjects";
+import { useAttendance } from "@/hooks/useAttendance";
 import { generateStudentReport, generateIdCard } from "@/lib/pdfExport";
 
 function getGradeLabel(m: number) {
@@ -34,6 +35,7 @@ const StudentProfile = () => {
   const { students } = useStudents();
   const { marks } = useMarks();
   const { subjects } = useSubjects();
+  const { records: attendanceRecords } = useAttendance();
 
   const student = students.find((s) => s.student_id === Number(id));
 
@@ -99,7 +101,7 @@ const StudentProfile = () => {
             <Button variant="outline" size="sm" onClick={() => navigate(`/admin/students`)}>
               <Pencil className="mr-1.5 h-3.5 w-3.5" /> Edit
             </Button>
-            <Button variant="outline" size="sm" onClick={() => generateStudentReport(student, myMarks, avg)}>
+            <Button variant="outline" size="sm" onClick={() => generateStudentReport(student, myMarks, avg, attendanceRecords, subjects)}>
               <Download className="mr-1.5 h-3.5 w-3.5" /> Report PDF
             </Button>
             <Button variant="outline" size="sm" onClick={() => generateIdCard(student)}>
