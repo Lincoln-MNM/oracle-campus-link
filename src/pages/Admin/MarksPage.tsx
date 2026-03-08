@@ -35,6 +35,7 @@ const MarksPage = () => {
 
   const [search, setSearch] = useState("");
   const [semFilter, setSemFilter] = useState("all");
+  const [subjectFilter, setSubjectFilter] = useState("all");
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Mark | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<MarkJoined | null>(null);
@@ -59,12 +60,25 @@ const MarksPage = () => {
       .filter(Boolean) as MarkJoined[];
   }, [marks, students, subjects]);
 
+  // Subjects available for the selected semester
+  const availableSubjects = useMemo(() => {
+    if (semFilter === "all") return subjects;
+    return subjects.filter((s) => s.semester === Number(semFilter));
+  }, [subjects, semFilter]);
+
+  // Reset subject filter when semester changes
+  const handleSemChange = (val: string) => {
+    setSemFilter(val);
+    setSubjectFilter("all");
+  };
+
   const filtered = joined.filter((r) => {
     const matchSearch =
       r.student_name.toLowerCase().includes(search.toLowerCase()) ||
       r.subject_name.toLowerCase().includes(search.toLowerCase());
     const matchSem = semFilter === "all" || r.semester === Number(semFilter);
-    return matchSearch && matchSem;
+    const matchSubject = subjectFilter === "all" || r.subject_id === Number(subjectFilter);
+    return matchSearch && matchSem && matchSubject;
   });
 
   const handleSave = (data: Omit<Mark, "mark_id"> & { mark_id?: number }) => {
@@ -105,12 +119,21 @@ const MarksPage = () => {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input placeholder="Search by student or subject…" className="pl-10" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
-        <Select value={semFilter} onValueChange={setSemFilter}>
+        <Select value={semFilter} onValueChange={handleSemChange}>
           <SelectTrigger className="w-36"><SelectValue placeholder="Semester" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Semesters</SelectItem>
             {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
               <SelectItem key={s} value={String(s)}>Semester {s}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={subjectFilter} onValueChange={setSubjectFilter}>
+          <SelectTrigger className="w-52"><SelectValue placeholder="Subject" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Subjects</SelectItem>
+            {availableSubjects.map((s) => (
+              <SelectItem key={s.subject_id} value={String(s.subject_id)}>{s.subject_name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
