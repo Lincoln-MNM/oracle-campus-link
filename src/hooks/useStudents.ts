@@ -2,9 +2,12 @@ import { useState, useCallback } from "react";
 
 export interface Student {
   student_id: number;
-  uid: string;
+  uid: string;        // UID001–UID050
+  rollNo: string;     // U2408001–U2408050
   name: string;
+  gender: string;
   department: string;
+  course: string;
   semester: number;
   email: string;
   phone?: string;
@@ -15,38 +18,92 @@ export interface Student {
 
 const STORAGE_KEY = "sms_students";
 
-const firstNames = [
-  "Gouri Nandhana", "Aardra Jee", "Aavani U", "Abraham Chirayath Martin", "Adithya Sreepad BS",
-  "Akash Kumar", "Ananya Nair", "Arjun Menon", "Bhavya Raj", "Chaitra S",
-  "Deepak Mohan", "Divya Lakshmi", "Eshan Varma", "Fathima Zahra", "Ganesh Pillai",
-  "Harini Devi", "Ishaan Bhat", "Jaya Krishnan", "Kavya Suresh", "Lakshmi Priya",
-  "Manoj Thomas", "Neha George", "Om Prakash", "Pooja Menon", "Rahul Das",
-  "Sanjana Nair", "Tejas Kumar", "Uma Maheshwari", "Varun Krishnan", "Wafa Siddiqui",
-  "Xavier Joseph", "Yamini Reddy", "Zaid Ahmed", "Aditya Raj", "Bhoomika Shetty",
-  "Chirag Patel", "Diya Sharma", "Eshwar Nair", "Faisal Khan", "Gayathri Menon",
-  "Hari Prasad", "Isha Gupta", "Jayesh Pillai", "Krithika Rajan", "Lekha Suresh",
-  "Meera Krishnan", "Nithin Thomas", "Oviya Raj", "Pranav Mohan", "Riya Nair",
+const studentNames: { name: string; gender: string }[] = [
+  { name: "Arjun Nair", gender: "Male" },
+  { name: "Ananya Das", gender: "Female" },
+  { name: "Gouri Nandhana", gender: "Female" },
+  { name: "Aardra Jee", gender: "Female" },
+  { name: "Aavani U", gender: "Female" },
+  { name: "Abraham Chirayath Martin", gender: "Male" },
+  { name: "Adithya Sreepad BS", gender: "Male" },
+  { name: "Akash Kumar", gender: "Male" },
+  { name: "Bhavya Raj", gender: "Female" },
+  { name: "Chaitra S", gender: "Female" },
+  { name: "Deepak Mohan", gender: "Male" },
+  { name: "Divya Lakshmi", gender: "Female" },
+  { name: "Eshan Varma", gender: "Male" },
+  { name: "Fathima Zahra", gender: "Female" },
+  { name: "Ganesh Pillai", gender: "Male" },
+  { name: "Harini Devi", gender: "Female" },
+  { name: "Ishaan Bhat", gender: "Male" },
+  { name: "Jaya Krishnan", gender: "Male" },
+  { name: "Kavya Suresh", gender: "Female" },
+  { name: "Lakshmi Priya", gender: "Female" },
+  { name: "Manoj Thomas", gender: "Male" },
+  { name: "Neha George", gender: "Female" },
+  { name: "Om Prakash", gender: "Male" },
+  { name: "Pooja Menon", gender: "Female" },
+  { name: "Rahul Das", gender: "Male" },
+  { name: "Sanjana Nair", gender: "Female" },
+  { name: "Tejas Kumar", gender: "Male" },
+  { name: "Uma Maheshwari", gender: "Female" },
+  { name: "Varun Krishnan", gender: "Male" },
+  { name: "Wafa Siddiqui", gender: "Female" },
+  { name: "Xavier Joseph", gender: "Male" },
+  { name: "Yamini Reddy", gender: "Female" },
+  { name: "Zaid Ahmed", gender: "Male" },
+  { name: "Aditya Raj", gender: "Male" },
+  { name: "Bhoomika Shetty", gender: "Female" },
+  { name: "Chirag Patel", gender: "Male" },
+  { name: "Diya Sharma", gender: "Female" },
+  { name: "Eshwar Nair", gender: "Male" },
+  { name: "Faisal Khan", gender: "Male" },
+  { name: "Gayathri Menon", gender: "Female" },
+  { name: "Hari Prasad", gender: "Male" },
+  { name: "Isha Gupta", gender: "Female" },
+  { name: "Jayesh Pillai", gender: "Male" },
+  { name: "Krithika Rajan", gender: "Female" },
+  { name: "Lekha Suresh", gender: "Female" },
+  { name: "Meera Krishnan", gender: "Female" },
+  { name: "Nithin Thomas", gender: "Male" },
+  { name: "Oviya Raj", gender: "Female" },
+  { name: "Pranav Mohan", gender: "Male" },
+  { name: "Riya Nair", gender: "Female" },
 ];
 
-const sampleStudents: Student[] = firstNames.map((name, i) => ({
-  student_id: i + 1,
-  uid: `U2408${String(i + 1).padStart(3, "0")}`,
-  name,
-  department: "Computer Science",
-  semester: 4,
-  email: `${name.split(" ")[0].toLowerCase()}@rajagiri.edu`,
-  phone: `98765${String(43210 + i).slice(-5)}`,
-  password: "demo123",
-  registered: i < 10, // First 10 students are pre-registered
-}));
+function makeSemester(i: number): number {
+  // Distribute across semesters 1-8
+  return (i % 8) + 1;
+}
+
+const sampleStudents: Student[] = studentNames.map(({ name, gender }, i) => {
+  const idx = i + 1;
+  const padded = String(idx).padStart(3, "0");
+  const firstName = name.split(" ")[0].toLowerCase();
+  const lastName = name.split(" ").slice(-1)[0].toLowerCase();
+  return {
+    student_id: idx,
+    uid: `UID${padded}`,
+    rollNo: `U2408${padded}`,
+    name,
+    gender,
+    department: "AI & Data Science",
+    course: "BTech AI & Data Science",
+    semester: makeSemester(i),
+    email: `${firstName}.${lastName}@student.edu`,
+    phone: `98765${String(43210 + i).slice(-5)}`,
+    password: `studentUID${padded}`,
+    registered: true, // All 50 are pre-registered and can login
+  };
+});
 
 function loadStudents(): Student[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      // Migration: if old data without uid, replace with new
-      if (parsed.length > 0 && !parsed[0].uid) {
+      // Migration: if old data without rollNo or uid format changed, replace
+      if (parsed.length > 0 && (!parsed[0].rollNo || !parsed[0].uid?.startsWith("UID"))) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleStudents));
         return sampleStudents;
       }

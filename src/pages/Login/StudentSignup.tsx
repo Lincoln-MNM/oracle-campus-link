@@ -18,8 +18,8 @@ const StudentSignup = () => {
 
   const validate = () => {
     const errs: Record<string, string> = {};
-    if (!uid.trim()) errs.uid = "Student UID is required";
-    else if (!/^U\d{7}$/.test(uid.trim())) errs.uid = "UID must be in format U2408001";
+    if (!uid.trim()) errs.uid = "Roll number is required";
+    else if (!/^U\d{7}$/.test(uid.trim())) errs.uid = "Roll number must be in format U2408001";
     if (!password.trim()) errs.password = "Password is required";
     else if (password.length < 4) errs.password = "Password must be at least 4 characters";
     if (password !== confirmPassword) errs.confirmPassword = "Passwords do not match";
@@ -39,7 +39,7 @@ const StudentSignup = () => {
       const raw = localStorage.getItem("sms_students");
       if (raw) {
         const students = JSON.parse(raw);
-        const student = students.find((s: any) => s.uid === uid.trim());
+        const student = students.find((s: any) => s.rollNo?.toUpperCase() === uid.trim().toUpperCase() || s.uid?.toUpperCase() === uid.trim().toUpperCase());
         if (!student) {
           toast({ title: "UID not found", description: "Admin must add you to the system first.", variant: "destructive" });
           setLoading(false);
@@ -91,7 +91,7 @@ const StudentSignup = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
               className="space-y-2">
-              <Label htmlFor="uid">Student UID</Label>
+              <Label htmlFor="uid">Roll Number</Label>
               <div className="relative">
                 <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input id="uid" placeholder="U2408001" className="pl-10" value={uid}
