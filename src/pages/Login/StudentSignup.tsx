@@ -39,7 +39,7 @@ const StudentSignup = () => {
       const raw = localStorage.getItem("sms_students");
       if (raw) {
         const students = JSON.parse(raw);
-        const student = students.find((s: any) => s.uid === uid.trim());
+        const student = students.find((s: any) => s.rollNo?.toUpperCase() === uid.trim().toUpperCase() || s.uid?.toUpperCase() === uid.trim().toUpperCase());
         if (!student) {
           toast({ title: "UID not found", description: "Admin must add you to the system first.", variant: "destructive" });
           setLoading(false);
