@@ -36,6 +36,9 @@ const MarksPage = () => {
   const [search, setSearch] = useState("");
   const [semFilter, setSemFilter] = useState("all");
   const [subjectFilter, setSubjectFilter] = useState("all");
+  const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState<Mark | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<MarkJoined | null>(null);
 
   // JOIN marks with students and subjects
   const joined: MarkJoined[] = useMemo(() => {
