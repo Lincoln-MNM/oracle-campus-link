@@ -8,6 +8,7 @@ import DevelopersSection from "@/components/Landing/DevelopersSection";
 import FeaturesSection from "@/components/Landing/FeaturesSection";
 import HowItWorksSection from "@/components/Landing/HowItWorksSection";
 import Footer from "@/components/Landing/Footer";
+import CursorEffect from "@/components/Landing/CursorEffect";
 
 const LandingPage = () => {
   useEffect(() => {
