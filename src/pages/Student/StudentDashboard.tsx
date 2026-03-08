@@ -123,30 +123,39 @@ const StudentDashboard = () => {
     return { total, present, absent, leave, pct: total > 0 ? Math.round((present / total) * 100) : 0 };
   }, [student, records]);
 
-  // Build timetable view for last week
+  // Build timetable view — uses date range filter or defaults to last 2 weeks
   const attendanceTimetable = useMemo(() => {
     if (!student) return [];
     const today = new Date();
-    const daysData: { date: string; dayName: string; periods: { period: number; subject: string; status: AttendanceStatus }[] }[] = [];
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const daysData: { date: string; dayName: string; periods: { period: number; subject: string; status: AttendanceStatus }[] }[] = [];
 
-    for (let d = 6; d >= 0; d--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - d);
-      const dayName = dayNames[date.getDay()];
-      if (dayName === "Sunday") continue;
-      const dateStr = date.toISOString().split("T")[0];
-      const slots = timetable[dayName] || [];
-      const periods = slots.map((slot) => {
-        const record = records.find(
-          (r) => r.student_id === student.student_id && r.date === dateStr && r.period === slot.period
-        );
-        return { period: slot.period, subject: slot.subject_name, status: record?.status || ("—" as AttendanceStatus) };
-      });
-      daysData.push({ date: dateStr, dayName, periods });
+    // Determine date range
+    const fromDate = attendanceFromDate || new Date(today.getTime() - 13 * 24 * 60 * 60 * 1000);
+    const toDate = attendanceToDate || today;
+
+    const current = new Date(fromDate);
+    current.setHours(0, 0, 0, 0);
+    const end = new Date(toDate);
+    end.setHours(23, 59, 59, 999);
+
+    while (current <= end) {
+      const dayName = dayNames[current.getDay()];
+      if (dayName !== "Sunday") {
+        const dateStr = current.toISOString().split("T")[0];
+        const slots = timetable[dayName] || [];
+        const periods = slots.map((slot) => {
+          const record = records.find(
+            (r) => r.student_id === student.student_id && r.date === dateStr && r.period === slot.period
+          );
+          return { period: slot.period, subject: slot.subject_name, status: record?.status || ("—" as AttendanceStatus) };
+        });
+        daysData.push({ date: dateStr, dayName, periods });
+      }
+      current.setDate(current.getDate() + 1);
     }
     return daysData;
-  }, [student, records, timetable]);
+  }, [student, records, timetable, attendanceFromDate, attendanceToDate]);
 
   // My leaves
   const myLeaves = requests.filter((r) => r.student_id === student?.student_id);
