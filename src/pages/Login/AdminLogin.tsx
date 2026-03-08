@@ -5,9 +5,17 @@ import { ShieldCheck, User, Lock, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth, UserRole } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
+
+// Hardcoded authorized admin credentials
+const AUTHORIZED_ADMINS = [
+  { username: "GOURI", password: "U2408001" },
+  { username: "AARDRA", password: "U2408002" },
+  { username: "AAVANI", password: "U2408004" },
+  { username: "ABRAHAM", password: "U2408005" },
+  { username: "ADITHYA", password: "U2408006" },
+];
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -15,7 +23,6 @@ const AdminLogin = () => {
   const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<UserRole>("admin");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
 
@@ -32,39 +39,29 @@ const AdminLogin = () => {
     if (!validate()) return;
 
     setLoading(true);
-    try {
-      const res = await fetch("http://localhost:5000/api/auth/admin-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-      const data = await res.json();
+    await new Promise((r) => setTimeout(r, 400));
 
-      if (data.status === "success") {
-        login({
-          id: data.admin_id || "admin-1",
-          name: username,
-          role: role,
-          token: data.token || `jwt-${Date.now()}`,
-        });
-        toast({ title: "Login successful", description: `Welcome back, ${username}!` });
-        navigate("/admin");
-      } else {
-        toast({ title: "Login failed", description: data.message || "Invalid credentials", variant: "destructive" });
-      }
-    } catch {
-      // Demo mode
+    const inputUsername = username.trim().toUpperCase();
+    const inputPassword = password.trim();
+
+    const admin = AUTHORIZED_ADMINS.find(
+      (a) => a.username === inputUsername && a.password === inputPassword
+    );
+
+    if (admin) {
       login({
-        id: "admin-1",
-        name: username,
-        role: role,
-        token: `demo-token-${Date.now()}`,
+        id: `admin-${admin.username.toLowerCase()}`,
+        name: admin.username,
+        role: "admin",
+        token: `jwt-${Date.now()}`,
       });
-      toast({ title: "Demo Mode", description: `Logged in as ${role} (backend offline).` });
+      toast({ title: "Login successful", description: `Welcome back, ${admin.username}!` });
       navigate("/admin");
-    } finally {
-      setLoading(false);
+    } else {
+      toast({ title: "Login failed", description: "Invalid Admin Credentials", variant: "destructive" });
     }
+
+    setLoading(false);
   };
 
   return (
@@ -120,18 +117,6 @@ const AdminLogin = () => {
                   onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: undefined })); }} />
               </div>
               {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.45 }} className="space-y-2">
-              <Label>Login as Role</Label>
-              <Select value={role} onValueChange={(v) => setRole(v as UserRole)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">Admin — Full access</SelectItem>
-                  <SelectItem value="staff">Staff — Add & edit students</SelectItem>
-                  <SelectItem value="viewer">Viewer — Read only</SelectItem>
-                </SelectContent>
-              </Select>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
