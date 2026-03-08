@@ -253,8 +253,9 @@ const StudentDashboard = () => {
           ))}
         </div>
 
-        <Tabs defaultValue="marks" className="space-y-4">
+        <Tabs defaultValue="profile" className="space-y-4">
           <TabsList className="flex-wrap h-auto gap-1">
+            <TabsTrigger value="profile"><User className="mr-1 h-3.5 w-3.5" /> Profile</TabsTrigger>
             <TabsTrigger value="marks"><ClipboardList className="mr-1 h-3.5 w-3.5" /> Marks</TabsTrigger>
             <TabsTrigger value="report-card"><Download className="mr-1 h-3.5 w-3.5" /> Report Card</TabsTrigger>
             <TabsTrigger value="timetable"><TableIcon className="mr-1 h-3.5 w-3.5" /> Timetable</TabsTrigger>
@@ -264,6 +265,118 @@ const StudentDashboard = () => {
             <TabsTrigger value="calendar"><CalendarDays className="mr-1 h-3.5 w-3.5" /> Calendar</TabsTrigger>
             <TabsTrigger value="fees"><DollarSign className="mr-1 h-3.5 w-3.5" /> Fees</TabsTrigger>
           </TabsList>
+
+          {/* PROFILE TAB */}
+          <TabsContent value="profile" className="space-y-4">
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border bg-card p-6 shadow-card">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+                {/* Photo */}
+                <div className="shrink-0">
+                  <PhotoUpload
+                    value={student.photo_url}
+                    onChange={(url) => {
+                      const updated = { ...student, photo_url: url || "" };
+                      updateStudent(updated);
+                    }}
+                  />
+                </div>
+
+                {/* Details grid */}
+                <div className="flex-1 space-y-4">
+                  <h2 className="text-xl font-bold font-display">Personal Details</h2>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                      <User className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Full Name</p>
+                        <p className="text-sm font-medium">{student.name}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                      <Hash className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">UID</p>
+                        <p className="text-sm font-medium">{student.uid}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                      <Hash className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Roll Number</p>
+                        <p className="text-sm font-medium">{student.rollNo}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                      <GraduationCap className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Department</p>
+                        <p className="text-sm font-medium">{student.department}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                      <BookOpen className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Course / Semester</p>
+                        <p className="text-sm font-medium">{student.course} · Sem {student.semester}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                      <Mail className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Email</p>
+                        <p className="text-sm font-medium">{student.email}</p>
+                      </div>
+                    </div>
+                    {student.phone && (
+                      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                        <Phone className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Phone</p>
+                          <p className="text-sm font-medium">{student.phone}</p>
+                        </div>
+                      </div>
+                    )}
+                    {student.father_name && (
+                      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                        <User className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Father's Name</p>
+                          <p className="text-sm font-medium">{student.father_name}</p>
+                        </div>
+                      </div>
+                    )}
+                    {student.mother_name && (
+                      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                        <User className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Mother's Name</p>
+                          <p className="text-sm font-medium">{student.mother_name}</p>
+                        </div>
+                      </div>
+                    )}
+                    {student.place && (
+                      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                        <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Place</p>
+                          <p className="text-sm font-medium">{student.place}</p>
+                        </div>
+                      </div>
+                    )}
+                    {student.blood_group && (
+                      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                        <Droplets className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Blood Group</p>
+                          <p className="text-sm font-medium">{student.blood_group}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </TabsContent>
 
           {/* MARKS TAB */}
           <TabsContent value="marks" className="space-y-4">
