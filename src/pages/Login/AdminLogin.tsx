@@ -5,13 +5,17 @@ import { ShieldCheck, User, Lock, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth, UserRole } from "@/hooks/useAuth";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState<UserRole>("admin");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
 
@@ -37,18 +41,26 @@ const AdminLogin = () => {
       const data = await res.json();
 
       if (data.status === "success") {
-        localStorage.setItem("userRole", "admin");
-        localStorage.setItem("userName", username);
-        toast({ title: "Login successful", description: "Welcome back, Admin!" });
+        login({
+          id: data.admin_id || "admin-1",
+          name: username,
+          role: role,
+          token: data.token || `jwt-${Date.now()}`,
+        });
+        toast({ title: "Login successful", description: `Welcome back, ${username}!` });
         navigate("/admin");
       } else {
         toast({ title: "Login failed", description: data.message || "Invalid credentials", variant: "destructive" });
       }
     } catch {
-      // Demo mode — simulate success when backend is offline
-      localStorage.setItem("userRole", "admin");
-      localStorage.setItem("userName", username);
-      toast({ title: "Demo Mode", description: "Backend offline — logged in locally." });
+      // Demo mode
+      login({
+        id: "admin-1",
+        name: username,
+        role: role,
+        token: `demo-token-${Date.now()}`,
+      });
+      toast({ title: "Demo Mode", description: `Logged in as ${role} (backend offline).` });
       navigate("/admin");
     } finally {
       setLoading(false);
@@ -57,7 +69,6 @@ const AdminLogin = () => {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4">
-      {/* Background decoration */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl" />
         <div className="absolute -bottom-40 -right-40 h-[400px] w-[400px] rounded-full bg-accent/5 blur-3xl" />
@@ -77,7 +88,6 @@ const AdminLogin = () => {
         </button>
 
         <div className="rounded-2xl border bg-card p-8 shadow-card">
-          {/* Header */}
           <div className="mb-8 text-center">
             <motion.div
               initial={{ scale: 0 }}
@@ -91,57 +101,43 @@ const AdminLogin = () => {
             <p className="mt-1 text-sm text-muted-foreground">Sign in to manage the system</p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="space-y-2"
-            >
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="username"
-                  placeholder="Enter admin username"
-                  className="pl-10"
-                  value={username}
-                  onChange={(e) => { setUsername(e.target.value); setErrors((p) => ({ ...p, username: undefined })); }}
-                />
+                <Input id="username" placeholder="Enter admin username" className="pl-10" value={username}
+                  onChange={(e) => { setUsername(e.target.value); setErrors((p) => ({ ...p, username: undefined })); }} />
               </div>
               {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="space-y-2"
-            >
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }} className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter password"
-                  className="pl-10"
-                  value={password}
-                  onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: undefined })); }}
-                />
+                <Input id="password" type="password" placeholder="Enter password" className="pl-10" value={password}
+                  onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: undefined })); }} />
               </div>
               {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.45 }} className="space-y-2">
+              <Label>Login as Role</Label>
+              <Select value={role} onValueChange={(v) => setRole(v as UserRole)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="admin">Admin — Full access</SelectItem>
+                  <SelectItem value="staff">Staff — Add & edit students</SelectItem>
+                  <SelectItem value="viewer">Viewer — Read only</SelectItem>
+                </SelectContent>
+              </Select>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
               <Button type="submit" className="w-full gradient-primary text-primary-foreground" size="lg" disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                {loading ? "Signing in…" : "Sign In as Admin"}
+                {loading ? "Signing in…" : "Sign In"}
               </Button>
             </motion.div>
           </form>
