@@ -80,6 +80,9 @@ function makeSemester(i: number): number {
   return (i % 8) + 1;
 }
 
+const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
+const places = ["Kochi", "Thrissur", "Thiruvananthapuram", "Kozhikode", "Kottayam", "Palakkad", "Malappuram", "Kannur", "Alappuzha", "Kollam"];
+
 const sampleStudents: Student[] = studentNames.map(({ name, gender }, i) => {
   const idx = i + 1;
   const padded = String(idx).padStart(3, "0");
@@ -98,6 +101,10 @@ const sampleStudents: Student[] = studentNames.map(({ name, gender }, i) => {
     phone: `98765${String(43210 + i).slice(-5)}`,
     password: `studentUID${padded}`,
     registered: true,
+    father_name: `Mr. ${lastName.charAt(0).toUpperCase() + lastName.slice(1)}`,
+    mother_name: `Mrs. ${lastName.charAt(0).toUpperCase() + lastName.slice(1)}`,
+    place: places[i % places.length],
+    blood_group: bloodGroups[i % bloodGroups.length],
   };
 });
 

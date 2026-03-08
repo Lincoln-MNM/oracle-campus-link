@@ -155,6 +155,33 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
             </div>
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="father_name">Father's Name</Label>
+              <Input id="father_name" value={form.father_name} onChange={(e) => set("father_name", e.target.value)} placeholder="Father's name" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="mother_name">Mother's Name</Label>
+              <Input id="mother_name" value={form.mother_name} onChange={(e) => set("mother_name", e.target.value)} placeholder="Mother's name" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="place">Place</Label>
+              <Input id="place" value={form.place} onChange={(e) => set("place", e.target.value)} placeholder="City/Town" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Blood Group</Label>
+              <Select value={form.blood_group} onValueChange={(v) => set("blood_group", v)}>
+                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                <SelectContent>
+                  {bloodGroups.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           <div className="space-y-1.5">
             <Label htmlFor="password">{student ? "New Password (leave blank to keep)" : "Password"}</Label>
             <Input id="password" type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder={student ? "••••••••" : "Set password"} />
