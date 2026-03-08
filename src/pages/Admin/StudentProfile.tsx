@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Mail, Phone, Building2, Hash, GraduationCap, Download, Pencil, Printer, CreditCard } from "lucide-react";
+import { ArrowLeft, Mail, Phone, Building2, Hash, GraduationCap, Download, Pencil, Printer, CreditCard, User, MapPin, Droplets } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
