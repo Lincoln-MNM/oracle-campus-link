@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   GraduationCap, BookOpen, Award, TrendingUp, ClipboardList, LogOut, Megaphone, CalendarDays, Download,
-  DollarSign, ClipboardCheck, FileText, Clock, CheckCircle, XCircle, Send, CalendarIcon, Filter,
+  DollarSign, ClipboardCheck, FileText, Clock, CheckCircle, XCircle, Send, CalendarIcon, Filter, TableIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -255,6 +255,7 @@ const StudentDashboard = () => {
           <TabsList className="flex-wrap h-auto gap-1">
             <TabsTrigger value="marks"><ClipboardList className="mr-1 h-3.5 w-3.5" /> Marks</TabsTrigger>
             <TabsTrigger value="report-card"><Download className="mr-1 h-3.5 w-3.5" /> Report Card</TabsTrigger>
+            <TabsTrigger value="timetable"><TableIcon className="mr-1 h-3.5 w-3.5" /> Timetable</TabsTrigger>
             <TabsTrigger value="attendance"><ClipboardCheck className="mr-1 h-3.5 w-3.5" /> Attendance</TabsTrigger>
             <TabsTrigger value="leaves"><FileText className="mr-1 h-3.5 w-3.5" /> Leaves</TabsTrigger>
             <TabsTrigger value="notices"><Megaphone className="mr-1 h-3.5 w-3.5" /> Notices</TabsTrigger>
@@ -391,6 +392,71 @@ const StudentDashboard = () => {
                   <p className="text-xs text-muted-foreground">Includes</p>
                   <p className="text-sm font-semibold">Attendance & Remarks</p>
                 </div>
+              </div>
+            </motion.div>
+          </TabsContent>
+
+          {/* TIMETABLE TAB */}
+          <TabsContent value="timetable" className="space-y-4">
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border bg-card shadow-card overflow-x-auto">
+              <div className="p-4 border-b">
+                <h3 className="font-semibold font-display">Weekly Class Timetable</h3>
+                <p className="mt-1 text-xs text-muted-foreground">6 periods per day · Monday to Saturday</p>
+              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="min-w-[100px]">Day</TableHead>
+                    {[1, 2, 3, 4, 5, 6].map((p) => (
+                      <TableHead key={p} className="text-center min-w-[130px]">Period {p}</TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => {
+                    const slots = timetable[day] || [];
+                    return (
+                      <TableRow key={day}>
+                        <TableCell className="font-semibold">{day}</TableCell>
+                        {slots.map((slot) => (
+                          <TableCell key={slot.period} className="text-center">
+                            <div className="rounded-lg border bg-muted/40 px-2 py-2">
+                              <p className="text-xs font-medium leading-tight">{slot.subject_name}</p>
+                            </div>
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </motion.div>
+
+            {/* Subject summary */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="rounded-xl border bg-card p-5 shadow-card">
+              <h3 className="font-semibold font-display mb-3">Weekly Subject Hours</h3>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {(() => {
+                  const countMap: Record<string, number> = {};
+                  ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].forEach((day) => {
+                    (timetable[day] || []).forEach((slot) => {
+                      countMap[slot.subject_name] = (countMap[slot.subject_name] || 0) + 1;
+                    });
+                  });
+                  return Object.entries(countMap)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([name, count]) => (
+                      <div key={name} className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                          <BookOpen className="h-4 w-4 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium leading-tight">{name}</p>
+                          <p className="text-xs text-muted-foreground">{count} periods/week</p>
+                        </div>
+                      </div>
+                    ));
+                })()}
               </div>
             </motion.div>
           </TabsContent>
