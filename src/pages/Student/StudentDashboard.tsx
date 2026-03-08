@@ -73,6 +73,7 @@ const StudentDashboard = () => {
   const [leaveReason, setLeaveReason] = useState("");
   const [leaveType, setLeaveType] = useState<LeaveType>("Full Day");
   const [selectedSemester, setSelectedSemester] = useState("4");
+  const [reportSemester, setReportSemester] = useState("4");
 
   // My marks
   const myMarks = useMemo(() => {
