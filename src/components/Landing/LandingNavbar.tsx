@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { label: "Home", href: "#home" },
+  { label: "Login", href: "#login" },
+  { label: "Developers", href: "#developers" },
   { label: "Features", href: "#features" },
   { label: "About", href: "#how-it-works" },
-  { label: "Login", href: "#login" },
 ];
 
 const LandingNavbar = () => {
