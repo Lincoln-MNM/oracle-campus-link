@@ -15,6 +15,10 @@ export interface Student {
   password?: string;
   photo_url?: string;
   registered?: boolean;
+  father_name?: string;
+  mother_name?: string;
+  place?: string;
+  blood_group?: string;
 }
 
 const STORAGE_KEY = "sms_students";
@@ -76,6 +80,9 @@ function makeSemester(i: number): number {
   return (i % 8) + 1;
 }
 
+const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
+const places = ["Kochi", "Thrissur", "Thiruvananthapuram", "Kozhikode", "Kottayam", "Palakkad", "Malappuram", "Kannur", "Alappuzha", "Kollam"];
+
 const sampleStudents: Student[] = studentNames.map(({ name, gender }, i) => {
   const idx = i + 1;
   const padded = String(idx).padStart(3, "0");
@@ -94,6 +101,10 @@ const sampleStudents: Student[] = studentNames.map(({ name, gender }, i) => {
     phone: `98765${String(43210 + i).slice(-5)}`,
     password: `studentUID${padded}`,
     registered: true,
+    father_name: `Mr. ${lastName.charAt(0).toUpperCase() + lastName.slice(1)}`,
+    mother_name: `Mrs. ${lastName.charAt(0).toUpperCase() + lastName.slice(1)}`,
+    place: places[i % places.length],
+    blood_group: bloodGroups[i % bloodGroups.length],
   };
 });
 
@@ -102,7 +113,7 @@ function loadStudents(): Student[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed.length > 0 && (!parsed[0].rollNo || !parsed[0].uid?.startsWith("UID"))) {
+      if (parsed.length > 0 && (!parsed[0].rollNo || !parsed[0].uid?.startsWith("UID") || !parsed[0].father_name)) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleStudents));
         return sampleStudents;
       }

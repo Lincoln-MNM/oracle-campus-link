@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Mail, Phone, Building2, Hash, GraduationCap, Download, Pencil, Printer, CreditCard } from "lucide-react";
+import { ArrowLeft, Mail, Phone, Building2, Hash, GraduationCap, Download, Pencil, Printer, CreditCard, User, MapPin, Droplets } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -89,10 +89,15 @@ const StudentProfile = () => {
               </div>
             </div>
             <div className="grid gap-2 text-sm sm:grid-cols-2">
-              <div className="flex items-center gap-2 text-muted-foreground"><Hash className="h-4 w-4" /> ID: {student.student_id}</div>
+              <div className="flex items-center gap-2 text-muted-foreground"><Hash className="h-4 w-4" /> UID: {student.uid}</div>
+              <div className="flex items-center gap-2 text-muted-foreground"><Hash className="h-4 w-4" /> Roll No: {student.rollNo}</div>
               <div className="flex items-center gap-2 text-muted-foreground"><Mail className="h-4 w-4" /> {student.email}</div>
               {student.phone && <div className="flex items-center gap-2 text-muted-foreground"><Phone className="h-4 w-4" /> {student.phone}</div>}
               <div className="flex items-center gap-2 text-muted-foreground"><Building2 className="h-4 w-4" /> {student.department}</div>
+              {student.father_name && <div className="flex items-center gap-2 text-muted-foreground"><User className="h-4 w-4" /> Father: {student.father_name}</div>}
+              {student.mother_name && <div className="flex items-center gap-2 text-muted-foreground"><User className="h-4 w-4" /> Mother: {student.mother_name}</div>}
+              {student.place && <div className="flex items-center gap-2 text-muted-foreground"><MapPin className="h-4 w-4" /> {student.place}</div>}
+              {student.blood_group && <div className="flex items-center gap-2 text-muted-foreground"><Droplets className="h-4 w-4" /> Blood Group: {student.blood_group}</div>}
             </div>
           </div>
 

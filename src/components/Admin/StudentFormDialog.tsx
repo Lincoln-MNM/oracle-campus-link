@@ -17,8 +17,9 @@ interface Props {
 
 const departments = ["AI & Data Science", "Computer Science", "Information Technology", "Electronics", "Mechanical", "Civil"];
 const genders = ["Male", "Female", "Other"];
+const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 
-const emptyForm = { name: "", uid: "", rollNo: "", gender: "Male", department: "AI & Data Science", course: "BTech AI & Data Science", semester: 1, email: "", phone: "", password: "", photo_url: "" };
+const emptyForm = { name: "", uid: "", rollNo: "", gender: "Male", department: "AI & Data Science", course: "BTech AI & Data Science", semester: 1, email: "", phone: "", password: "", photo_url: "", father_name: "", mother_name: "", place: "", blood_group: "" };
 
 const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
   const [form, setForm] = useState(emptyForm);
@@ -39,6 +40,10 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
         phone: student.phone || "",
         password: "",
         photo_url: student.photo_url || "",
+        father_name: student.father_name || "",
+        mother_name: student.mother_name || "",
+        place: student.place || "",
+        blood_group: student.blood_group || "",
       });
     } else {
       setForm(emptyForm);
@@ -147,6 +152,33 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
             <div className="space-y-1.5">
               <Label htmlFor="phone">Phone</Label>
               <Input id="phone" value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="Optional" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="father_name">Father's Name</Label>
+              <Input id="father_name" value={form.father_name} onChange={(e) => set("father_name", e.target.value)} placeholder="Father's name" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="mother_name">Mother's Name</Label>
+              <Input id="mother_name" value={form.mother_name} onChange={(e) => set("mother_name", e.target.value)} placeholder="Mother's name" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="place">Place</Label>
+              <Input id="place" value={form.place} onChange={(e) => set("place", e.target.value)} placeholder="City/Town" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Blood Group</Label>
+              <Select value={form.blood_group} onValueChange={(v) => set("blood_group", v)}>
+                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                <SelectContent>
+                  {bloodGroups.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
