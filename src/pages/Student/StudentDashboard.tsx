@@ -311,7 +311,75 @@ const StudentDashboard = () => {
             )}
           </TabsContent>
 
-          {/* ATTENDANCE TAB */}
+          {/* REPORT CARD TAB */}
+          <TabsContent value="report-card" className="space-y-4">
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border bg-card p-6 shadow-card">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                  <Download className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold font-display">Download Semester Report Card</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Generate a comprehensive PDF report card including your marks, attendance summary, enrolled subjects, and teacher remarks for a specific semester.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end">
+                <div className="space-y-2">
+                  <Label>Select Semester</Label>
+                  <Select value={reportSemester} onValueChange={setReportSemester}>
+                    <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
+                        <SelectItem key={s} value={String(s)}>Semester {s}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button
+                  className="gradient-primary text-primary-foreground"
+                  onClick={() => {
+                    const sem = Number(reportSemester);
+                    const subMap = new Map(subjects.map((s) => [s.subject_id, s]));
+                    const semMarks = marks
+                      .filter((m) => m.student_id === student.student_id)
+                      .map((m) => {
+                        const sub = subMap.get(m.subject_id);
+                        return { ...m, subject_name: sub?.subject_name || "Unknown", semester: sub?.semester || 0 };
+                      })
+                      .filter((m) => m.semester === sem);
+
+                    generateSemesterReportCard(student, semMarks.length > 0 ? semMarks : myMarks, sem, records, subjects);
+                    toast({ title: `✅ Report Card for Semester ${sem} downloaded` });
+                  }}
+                >
+                  <Download className="mr-2 h-4 w-4" /> Download Report Card PDF
+                </Button>
+              </div>
+
+              {/* Preview info */}
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                <div className="rounded-lg border bg-muted/30 p-4 text-center">
+                  <GraduationCap className="mx-auto h-5 w-5 text-muted-foreground mb-1" />
+                  <p className="text-xs text-muted-foreground">Includes</p>
+                  <p className="text-sm font-semibold">Student Details</p>
+                </div>
+                <div className="rounded-lg border bg-muted/30 p-4 text-center">
+                  <ClipboardList className="mx-auto h-5 w-5 text-muted-foreground mb-1" />
+                  <p className="text-xs text-muted-foreground">Includes</p>
+                  <p className="text-sm font-semibold">Marks & Grades</p>
+                </div>
+                <div className="rounded-lg border bg-muted/30 p-4 text-center">
+                  <ClipboardCheck className="mx-auto h-5 w-5 text-muted-foreground mb-1" />
+                  <p className="text-xs text-muted-foreground">Includes</p>
+                  <p className="text-sm font-semibold">Attendance & Remarks</p>
+                </div>
+              </div>
+            </motion.div>
+          </TabsContent>
+
           <TabsContent value="attendance" className="space-y-4">
             <div className="rounded-xl border bg-card shadow-card overflow-x-auto">
               <div className="p-4 border-b">
