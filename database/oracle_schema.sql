@@ -1,5 +1,5 @@
 -- Student Management System - Oracle Database Schema
--- Phase 1: Table Definitions
+-- Updated: Phase 5 — added department to subjects, password to students
 
 -- STUDENTS table
 CREATE TABLE students (
@@ -24,7 +24,8 @@ CREATE TABLE admins (
 CREATE TABLE subjects (
     subject_id    NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     subject_name  VARCHAR2(100) NOT NULL,
-    semester      NUMBER(2)
+    semester      NUMBER(2),
+    department    VARCHAR2(100)
 );
 
 -- MARKS table
@@ -41,3 +42,4 @@ CREATE TABLE marks (
 CREATE INDEX idx_marks_student ON marks(student_id);
 CREATE INDEX idx_marks_subject ON marks(subject_id);
 CREATE INDEX idx_students_dept ON students(department);
+CREATE INDEX idx_subjects_dept ON subjects(department);

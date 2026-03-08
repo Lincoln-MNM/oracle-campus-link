@@ -23,8 +23,12 @@ CORS(app)
 # Register blueprints
 from routes.auth import auth_bp
 from routes.students import students_bp
+from routes.subjects import subjects_bp
+from routes.marks import marks_bp
 app.register_blueprint(auth_bp)
 app.register_blueprint(students_bp)
+app.register_blueprint(subjects_bp)
+app.register_blueprint(marks_bp)
 
 
 @app.route("/api/status", methods=["GET"])
