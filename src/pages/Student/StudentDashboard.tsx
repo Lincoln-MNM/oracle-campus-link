@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   GraduationCap, BookOpen, Award, TrendingUp, ClipboardList, LogOut, Megaphone, CalendarDays, Download,
   DollarSign, ClipboardCheck, FileText, Clock, CheckCircle, XCircle, Send, CalendarIcon, Filter, TableIcon,
-  User, MapPin, Droplets, Phone, Mail, Hash,
+  User, MapPin, Droplets, Phone, Mail, Hash, Save, Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
