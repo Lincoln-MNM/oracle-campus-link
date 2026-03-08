@@ -40,6 +40,10 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
         phone: student.phone || "",
         password: "",
         photo_url: student.photo_url || "",
+        father_name: student.father_name || "",
+        mother_name: student.mother_name || "",
+        place: student.place || "",
+        blood_group: student.blood_group || "",
       });
     } else {
       setForm(emptyForm);
