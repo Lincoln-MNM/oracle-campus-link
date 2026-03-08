@@ -124,7 +124,7 @@ export function generateStudentReport(
       doc.setDrawColor(37, 99, 235);
       doc.line(14, y + 3, 80, y + 3);
 
-      (doc as any).autoTable({
+      autoTable(doc, {
         startY: y + 8,
         head: [["#", "Subject Name", "Semester"]],
         body: enrolledSubjects.map((s, i) => [String(i + 1), s.subject_name, `Semester ${s.semester}`]),
