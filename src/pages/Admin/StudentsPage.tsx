@@ -17,6 +17,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useStudents, Student } from "@/hooks/useStudents";
 import StudentFormDialog from "@/components/Admin/StudentFormDialog";
+import { exportStudentsExcel, exportStudentsCsv } from "@/lib/pdfExport";
 
 const PAGE_SIZE = 10;
 
