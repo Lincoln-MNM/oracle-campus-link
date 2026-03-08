@@ -18,8 +18,8 @@ const StudentSignup = () => {
 
   const validate = () => {
     const errs: Record<string, string> = {};
-    if (!uid.trim()) errs.uid = "Student UID is required";
-    else if (!/^U\d{7}$/.test(uid.trim())) errs.uid = "UID must be in format U2408001";
+    if (!uid.trim()) errs.uid = "Roll number is required";
+    else if (!/^U\d{7}$/.test(uid.trim())) errs.uid = "Roll number must be in format U2408001";
     if (!password.trim()) errs.password = "Password is required";
     else if (password.length < 4) errs.password = "Password must be at least 4 characters";
     if (password !== confirmPassword) errs.confirmPassword = "Passwords do not match";

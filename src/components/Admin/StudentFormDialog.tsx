@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,9 +15,10 @@ interface Props {
   onSave: (data: Omit<Student, "student_id"> & { student_id?: number }) => void;
 }
 
-const departments = ["Computer Science", "Information Technology", "Electronics", "Mechanical", "Civil", "Electrical"];
+const departments = ["AI & Data Science", "Computer Science", "Information Technology", "Electronics", "Mechanical", "Civil"];
+const genders = ["Male", "Female", "Other"];
 
-const emptyForm = { name: "", uid: "", department: "", semester: 1, email: "", phone: "", password: "", photo_url: "" };
+const emptyForm = { name: "", uid: "", rollNo: "", gender: "Male", department: "AI & Data Science", course: "BTech AI & Data Science", semester: 1, email: "", phone: "", password: "", photo_url: "" };
 
 const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
   const [form, setForm] = useState(emptyForm);
@@ -29,7 +30,10 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
       setForm({
         name: student.name,
         uid: student.uid || "",
+        rollNo: student.rollNo || "",
+        gender: student.gender || "Male",
         department: student.department,
+        course: student.course || "BTech AI & Data Science",
         semester: student.semester,
         email: student.email,
         phone: student.phone || "",
@@ -46,6 +50,7 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
     const e: Record<string, string> = {};
     if (!form.name.trim()) e.name = "Name is required";
     if (!form.uid.trim()) e.uid = "UID is required";
+    if (!form.rollNo.trim()) e.rollNo = "Roll number is required";
     if (!form.department) e.department = "Department is required";
     if (form.semester < 1 || form.semester > 8) e.semester = "Semester must be 1–8";
     if (!form.email.trim()) e.email = "Email is required";
@@ -60,7 +65,7 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
     if (!validate()) return;
     setSaving(true);
     await new Promise((r) => setTimeout(r, 400));
-    onSave({ ...form, semester: Number(form.semester) });
+    onSave({ ...form, semester: Number(form.semester), registered: true });
     setSaving(false);
   };
 
@@ -74,6 +79,7 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-display">{student ? "Edit Student" : "Add New Student"}</DialogTitle>
+          <DialogDescription>Fill in the student details below.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="mt-2 space-y-4">
           <div className="space-y-1.5">
@@ -92,8 +98,25 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="uid">Student UID</Label>
-              <Input id="uid" value={form.uid} onChange={(e) => set("uid", e.target.value)} placeholder="U2408001" />
+              <Input id="uid" value={form.uid} onChange={(e) => set("uid", e.target.value)} placeholder="UID001" />
               {errors.uid && <p className="text-xs text-destructive">{errors.uid}</p>}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="rollNo">Roll Number</Label>
+              <Input id="rollNo" value={form.rollNo} onChange={(e) => set("rollNo", e.target.value)} placeholder="U2408001" />
+              {errors.rollNo && <p className="text-xs text-destructive">{errors.rollNo}</p>}
+            </div>
+            <div className="space-y-1.5">
+              <Label>Gender</Label>
+              <Select value={form.gender} onValueChange={(v) => set("gender", v)}>
+                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                <SelectContent>
+                  {genders.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -118,7 +141,7 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="john@example.com" />
+              <Input id="email" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="john@student.edu" />
               {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
             </div>
             <div className="space-y-1.5">
