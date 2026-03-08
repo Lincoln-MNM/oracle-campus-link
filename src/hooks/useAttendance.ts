@@ -77,7 +77,7 @@ function generateSampleAttendance(): AttendanceRecord[] {
   const today = new Date();
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-  for (let d = 7; d >= 0; d--) {
+  for (let d = 21; d >= 0; d--) {
     const date = new Date(today);
     date.setDate(today.getDate() - d);
     const dayName = days[date.getDay()];
