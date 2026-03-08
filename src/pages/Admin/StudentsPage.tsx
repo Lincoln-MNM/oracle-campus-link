@@ -22,6 +22,7 @@ import { exportStudentsExcel, exportStudentsCsv } from "@/lib/pdfExport";
 const PAGE_SIZE = 10;
 
 const StudentsPage = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { students, addStudent, updateStudent, removeStudent } = useStudents();
   const [search, setSearch] = useState("");
