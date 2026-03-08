@@ -23,8 +23,10 @@ import { useMarks } from "@/hooks/useMarks";
 import { useAttendance, AttendanceStatus } from "@/hooks/useAttendance";
 import { useLeaveRequests, LeaveType } from "@/hooks/useLeaveRequests";
 import { useNotices } from "@/hooks/useNotices";
-import { useCalendarEvents } from "@/hooks/useCalendarEvents";
+import { useCalendarEvents, EventType } from "@/hooks/useCalendarEvents";
 import { useFeePayments } from "@/hooks/useFeePayments";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
@@ -864,28 +866,68 @@ const StudentDashboard = () => {
 
           {/* CALENDAR TAB */}
           <TabsContent value="calendar" className="space-y-4">
-            <div className="rounded-xl border bg-card shadow-card">
-              {upcomingEvents.length === 0 ? (
-                <div className="py-12 text-center text-muted-foreground">No upcoming events.</div>
-              ) : (
-                <div className="divide-y">
-                  {upcomingEvents.map((e) => (
-                    <div key={e.id} className="flex items-center gap-4 p-4">
-                      <div className="flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-secondary text-xs">
-                        <span className="font-bold">{new Date(e.date).getDate()}</span>
-                        <span className="text-[10px] text-muted-foreground">
-                          {new Date(e.date).toLocaleString("default", { month: "short" })}
-                        </span>
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-sm">{e.title}</p>
-                        {e.description && <p className="text-xs text-muted-foreground">{e.description}</p>}
-                      </div>
-                      <Badge variant="secondary" className="text-[10px]">{e.type}</Badge>
-                    </div>
-                  ))}
+            {(() => {
+              const eventTypeColors: Record<EventType, string> = {
+                Exam: "#ef4444",
+                Holiday: "#22c55e",
+                Workshop: "#3b82f6",
+                "Project Submission": "#f59e0b",
+                Other: "#8b5cf6",
+              };
+              const calendarEvents = events.map((e) => ({
+                id: e.id,
+                title: e.title,
+                date: e.date,
+                backgroundColor: eventTypeColors[e.type],
+                borderColor: eventTypeColors[e.type],
+                extendedProps: { type: e.type, description: e.description },
+              }));
+              return (
+                <div className="grid gap-6 lg:grid-cols-3">
+                  <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                    className="lg:col-span-2 rounded-xl border bg-card p-4 shadow-card">
+                    <FullCalendar
+                      plugins={[dayGridPlugin]}
+                      initialView="dayGridMonth"
+                      events={calendarEvents}
+                      height="auto"
+                      headerToolbar={{ left: "prev,next today", center: "title", right: "" }}
+                    />
+                  </motion.div>
+
+                  <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+                    className="space-y-3">
+                    <h3 className="font-semibold font-display">Upcoming Events</h3>
+                    {events
+                      .filter((e) => e.date >= new Date().toISOString().split("T")[0])
+                      .sort((a, b) => a.date.localeCompare(b.date))
+                      .slice(0, 8)
+                      .map((e) => (
+                        <div key={e.id} className="flex items-start gap-3 rounded-lg border bg-card p-3 shadow-sm">
+                          <div className="h-3 w-3 mt-1.5 rounded-full shrink-0" style={{ backgroundColor: eventTypeColors[e.type] }} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{e.title}</p>
+                            <p className="text-xs text-muted-foreground">{e.date}</p>
+                            {e.description && <p className="text-xs text-muted-foreground mt-0.5">{e.description}</p>}
+                            <Badge variant="secondary" className="mt-1 text-[10px]">{e.type}</Badge>
+                          </div>
+                        </div>
+                      ))}
+                    {events.filter((e) => e.date >= new Date().toISOString().split("T")[0]).length === 0 && (
+                      <p className="text-sm text-muted-foreground">No upcoming events.</p>
+                    )}
+                  </motion.div>
                 </div>
-              )}
+              );
+            })()}
+
+            <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+              {Object.entries({ Exam: "#ef4444", Holiday: "#22c55e", Workshop: "#3b82f6", "Project Submission": "#f59e0b", Other: "#8b5cf6" }).map(([type, color]) => (
+                <span key={type} className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
+                  {type}
+                </span>
+              ))}
             </div>
           </TabsContent>
 
