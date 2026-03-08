@@ -1,5 +1,5 @@
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import type { Student } from "@/hooks/useStudents";
 import type { AttendanceRecord } from "@/hooks/useAttendance";
