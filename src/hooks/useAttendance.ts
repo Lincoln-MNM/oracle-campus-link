@@ -110,7 +110,8 @@ function loadAttendance(): AttendanceRecord[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed.length > 0) return parsed;
+      // Regenerate if old data has fewer records (was only 1 week)
+      if (parsed.length > 500) return parsed;
     }
   } catch { /* ignore */ }
   const data = generateSampleAttendance();
