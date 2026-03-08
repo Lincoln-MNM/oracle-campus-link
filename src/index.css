@@ -133,3 +133,12 @@
     box-shadow: 0 12px 32px -8px hsl(224 76% 48% / 0.18);
   }
 }
+
+/* Print styles */
+@media print {
+  body { background: white !important; }
+  .no-print, nav, header, [data-sidebar], button { display: none !important; }
+  .shadow-card, .shadow-card-hover { box-shadow: none !important; }
+  .rounded-xl { border-radius: 0 !important; }
+  table { font-size: 10px; }
+}
