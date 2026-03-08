@@ -62,7 +62,7 @@ const StudentDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { logout } = useAuth();
-  const { students } = useStudents();
+  const { students, updateStudent } = useStudents();
   const { subjects } = useSubjects();
   const { marks } = useMarks();
   const { records, timetable } = useAttendance();
