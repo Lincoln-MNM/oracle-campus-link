@@ -101,7 +101,7 @@ const StudentProfile = () => {
             <Button variant="outline" size="sm" onClick={() => navigate(`/admin/students`)}>
               <Pencil className="mr-1.5 h-3.5 w-3.5" /> Edit
             </Button>
-            <Button variant="outline" size="sm" onClick={() => generateStudentReport(student, myMarks, avg)}>
+            <Button variant="outline" size="sm" onClick={() => generateStudentReport(student, myMarks, avg, attendanceRecords, subjects)}>
               <Download className="mr-1.5 h-3.5 w-3.5" /> Report PDF
             </Button>
             <Button variant="outline" size="sm" onClick={() => generateIdCard(student)}>
