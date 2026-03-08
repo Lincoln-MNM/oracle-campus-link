@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 
 export interface Student {
   student_id: number;
+  uid: string;
   name: string;
   department: string;
   semester: number;
@@ -9,22 +10,48 @@ export interface Student {
   phone?: string;
   password?: string;
   photo_url?: string;
+  registered?: boolean;
 }
 
 const STORAGE_KEY = "sms_students";
 
-const sampleStudents: Student[] = [
-  { student_id: 1001, name: "Aarav Sharma", department: "Computer Science", semester: 4, email: "aarav@university.edu", phone: "9876543210" },
-  { student_id: 1002, name: "Priya Patel", department: "Information Technology", semester: 3, email: "priya@university.edu", phone: "9876543211" },
-  { student_id: 1003, name: "Rahul Verma", department: "Electronics", semester: 6, email: "rahul@university.edu", phone: "9876543212" },
-  { student_id: 1004, name: "Sneha Gupta", department: "Computer Science", semester: 2, email: "sneha@university.edu" },
-  { student_id: 1005, name: "Vikram Singh", department: "Mechanical", semester: 5, email: "vikram@university.edu" },
+const firstNames = [
+  "Gouri Nandhana", "Aardra Jee", "Aavani U", "Abraham Chirayath Martin", "Adithya Sreepad BS",
+  "Akash Kumar", "Ananya Nair", "Arjun Menon", "Bhavya Raj", "Chaitra S",
+  "Deepak Mohan", "Divya Lakshmi", "Eshan Varma", "Fathima Zahra", "Ganesh Pillai",
+  "Harini Devi", "Ishaan Bhat", "Jaya Krishnan", "Kavya Suresh", "Lakshmi Priya",
+  "Manoj Thomas", "Neha George", "Om Prakash", "Pooja Menon", "Rahul Das",
+  "Sanjana Nair", "Tejas Kumar", "Uma Maheshwari", "Varun Krishnan", "Wafa Siddiqui",
+  "Xavier Joseph", "Yamini Reddy", "Zaid Ahmed", "Aditya Raj", "Bhoomika Shetty",
+  "Chirag Patel", "Diya Sharma", "Eshwar Nair", "Faisal Khan", "Gayathri Menon",
+  "Hari Prasad", "Isha Gupta", "Jayesh Pillai", "Krithika Rajan", "Lekha Suresh",
+  "Meera Krishnan", "Nithin Thomas", "Oviya Raj", "Pranav Mohan", "Riya Nair",
 ];
+
+const sampleStudents: Student[] = firstNames.map((name, i) => ({
+  student_id: i + 1,
+  uid: `U2408${String(i + 1).padStart(3, "0")}`,
+  name,
+  department: "Computer Science",
+  semester: 4,
+  email: `${name.split(" ")[0].toLowerCase()}@rajagiri.edu`,
+  phone: `98765${String(43210 + i).slice(-5)}`,
+  password: "demo123",
+  registered: i < 10, // First 10 students are pre-registered
+}));
 
 function loadStudents(): Student[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      // Migration: if old data without uid, replace with new
+      if (parsed.length > 0 && !parsed[0].uid) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleStudents));
+        return sampleStudents;
+      }
+      return parsed;
+    }
   } catch { /* ignore */ }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleStudents));
   return sampleStudents;
@@ -44,7 +71,7 @@ export function useStudents() {
 
   const addStudent = useCallback((data: Omit<Student, "student_id">) => {
     setStudents((prev) => {
-      const maxId = prev.reduce((m, s) => Math.max(m, s.student_id), 1000);
+      const maxId = prev.reduce((m, s) => Math.max(m, s.student_id), 0);
       const next = [...prev, { ...data, student_id: maxId + 1 }];
       saveStudents(next);
       return next;

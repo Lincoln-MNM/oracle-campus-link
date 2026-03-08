@@ -41,6 +41,7 @@ const StudentsPage = () => {
         s.name.toLowerCase().includes(search.toLowerCase()) ||
         s.department.toLowerCase().includes(search.toLowerCase()) ||
         String(s.student_id).includes(search) ||
+        (s.uid || "").toLowerCase().includes(search.toLowerCase()) ||
         s.email.toLowerCase().includes(search.toLowerCase());
       const matchDept = deptFilter === "all" || s.department === deptFilter;
       return matchSearch && matchDept;
@@ -50,7 +51,6 @@ const StudentsPage = () => {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  // Reset page when filters change
   const handleSearch = (v: string) => { setSearch(v); setPage(1); };
   const handleDeptFilter = (v: string) => { setDeptFilter(v); setPage(1); };
 
@@ -102,11 +102,10 @@ const StudentsPage = () => {
         </div>
       </div>
 
-      {/* Search & Filter */}
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="relative min-w-[200px] flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Search name, ID, email…" className="pl-10" value={search} onChange={(e) => handleSearch(e.target.value)} />
+          <Input placeholder="Search name, UID, email…" className="pl-10" value={search} onChange={(e) => handleSearch(e.target.value)} />
         </div>
         <Select value={deptFilter} onValueChange={handleDeptFilter}>
           <SelectTrigger className="w-44"><SelectValue placeholder="Department" /></SelectTrigger>
@@ -117,7 +116,6 @@ const StudentsPage = () => {
         </Select>
       </div>
 
-      {/* Table */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border bg-card shadow-card">
         {loading ? (
           <div className="space-y-3 p-6">
@@ -142,7 +140,7 @@ const StudentsPage = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-20">ID</TableHead>
+                <TableHead className="w-24">UID</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Department</TableHead>
                 <TableHead className="w-24">Semester</TableHead>
@@ -153,6 +151,9 @@ const StudentsPage = () => {
             <TableBody>
               {paginated.map((student) => (
                 <TableRow key={student.student_id} className="transition-colors hover:bg-muted/50">
+                  <TableCell>
+                    <Badge variant="outline" className="font-mono text-xs">{student.uid || `#${student.student_id}`}</Badge>
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {student.photo_url ? (
@@ -189,7 +190,6 @@ const StudentsPage = () => {
           </Table>
         )}
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between border-t px-4 py-3">
             <p className="text-xs text-muted-foreground">
@@ -199,17 +199,12 @@ const StudentsPage = () => {
               <Button variant="outline" size="icon" className="h-8 w-8" disabled={page <= 1} onClick={() => setPage(page - 1)}>
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <Button
-                  key={p}
-                  variant={p === page ? "default" : "outline"}
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => setPage(p)}
-                >
+              {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
+                <Button key={p} variant={p === page ? "default" : "outline"} size="icon" className="h-8 w-8" onClick={() => setPage(p)}>
                   {p}
                 </Button>
               ))}
+              {totalPages > 5 && <span className="px-1 text-muted-foreground">…</span>}
               <Button variant="outline" size="icon" className="h-8 w-8" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>
                 <ChevronRight className="h-4 w-4" />
               </Button>

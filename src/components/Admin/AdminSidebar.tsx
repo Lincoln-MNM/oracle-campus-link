@@ -1,4 +1,7 @@
-import { LayoutDashboard, Users, BookOpen, ClipboardList, BarChart3, LogOut, GraduationCap, Shield, ScrollText } from "lucide-react";
+import {
+  LayoutDashboard, Users, BookOpen, ClipboardList, BarChart3, LogOut, GraduationCap, Shield, ScrollText,
+  CalendarDays, Megaphone, DollarSign, ClipboardCheck, FileText as LeaveIcon, Code2,
+} from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -13,8 +16,14 @@ const menuItems = [
   { title: "Students", url: "/admin/students", icon: Users, roles: ["admin", "staff", "viewer"] },
   { title: "Subjects", url: "/admin/subjects", icon: BookOpen, roles: ["admin", "staff"] },
   { title: "Marks", url: "/admin/marks", icon: ClipboardList, roles: ["admin", "staff"] },
+  { title: "Attendance", url: "/admin/attendance", icon: ClipboardCheck, roles: ["admin", "staff"] },
+  { title: "Leave Approvals", url: "/admin/leaves", icon: LeaveIcon, roles: ["admin", "staff"] },
+  { title: "Notices", url: "/admin/notices", icon: Megaphone, roles: ["admin", "staff"] },
+  { title: "Calendar", url: "/admin/calendar", icon: CalendarDays, roles: ["admin", "staff", "viewer"] },
+  { title: "Fee Management", url: "/admin/fees", icon: DollarSign, roles: ["admin"] },
   { title: "Reports", url: "/admin/reports", icon: BarChart3, roles: ["admin", "staff", "viewer"] },
   { title: "Activity Log", url: "/admin/logs", icon: ScrollText, roles: ["admin"] },
+  { title: "Developers", url: "/developers", icon: Code2, roles: ["admin", "staff", "viewer"] },
 ];
 
 export function AdminSidebar() {

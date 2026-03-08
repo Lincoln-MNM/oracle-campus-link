@@ -17,7 +17,7 @@ interface Props {
 
 const departments = ["Computer Science", "Information Technology", "Electronics", "Mechanical", "Civil", "Electrical"];
 
-const emptyForm = { name: "", department: "", semester: 1, email: "", phone: "", password: "", photo_url: "" };
+const emptyForm = { name: "", uid: "", department: "", semester: 1, email: "", phone: "", password: "", photo_url: "" };
 
 const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
   const [form, setForm] = useState(emptyForm);
@@ -28,6 +28,7 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
     if (student) {
       setForm({
         name: student.name,
+        uid: student.uid || "",
         department: student.department,
         semester: student.semester,
         email: student.email,
@@ -44,6 +45,7 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
   const validate = () => {
     const e: Record<string, string> = {};
     if (!form.name.trim()) e.name = "Name is required";
+    if (!form.uid.trim()) e.uid = "UID is required";
     if (!form.department) e.department = "Department is required";
     if (form.semester < 1 || form.semester > 8) e.semester = "Semester must be 1–8";
     if (!form.email.trim()) e.email = "Email is required";
@@ -74,7 +76,6 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
           <DialogTitle className="font-display">{student ? "Edit Student" : "Add New Student"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="mt-2 space-y-4">
-          {/* Photo upload */}
           <div className="space-y-1.5">
             <Label>Profile Photo</Label>
             <PhotoUpload
@@ -83,14 +84,19 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
             />
           </div>
 
-          {/* Name */}
-          <div className="space-y-1.5">
-            <Label htmlFor="name">Full Name</Label>
-            <Input id="name" value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="John Doe" />
-            {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="name">Full Name</Label>
+              <Input id="name" value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="John Doe" />
+              {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="uid">Student UID</Label>
+              <Input id="uid" value={form.uid} onChange={(e) => set("uid", e.target.value)} placeholder="U2408001" />
+              {errors.uid && <p className="text-xs text-destructive">{errors.uid}</p>}
+            </div>
           </div>
 
-          {/* Dept + Semester */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label>Department</Label>
@@ -109,7 +115,6 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
             </div>
           </div>
 
-          {/* Email + Phone */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="email">Email</Label>
@@ -122,7 +127,6 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
             </div>
           </div>
 
-          {/* Password */}
           <div className="space-y-1.5">
             <Label htmlFor="password">{student ? "New Password (leave blank to keep)" : "Password"}</Label>
             <Input id="password" type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder={student ? "••••••••" : "Set password"} />

@@ -15,9 +15,7 @@ const Footer = () => {
           <div className="mt-6 space-y-1 text-sm text-muted-foreground">
             <p className="font-semibold text-foreground">Student Management System</p>
             <p>Database Management Systems (DBMS) Project</p>
-            <p className="mt-3">Developed by: <span className="font-medium text-foreground">[Your Name]</span></p>
-            <p>Roll No: <span className="font-medium text-foreground">[Your Roll Number]</span></p>
-            <p>University: <span className="font-medium text-foreground">[Your University]</span></p>
+            <p className="mt-3">University: <span className="font-medium text-foreground">RAJAGIRI SCHOOL OF ENGINEERING AND TECHNOLOGY</span></p>
           </div>
 
           <div className="mt-8 flex gap-6 text-xs text-muted-foreground">
@@ -25,6 +23,7 @@ const Footer = () => {
             <a href="#features" className="hover:text-foreground transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-foreground transition-colors">About</a>
             <a href="#login" className="hover:text-foreground transition-colors">Login</a>
+            <a href="/developers" className="hover:text-foreground transition-colors">Developers</a>
           </div>
 
           <p className="mt-6 text-xs text-muted-foreground">
