@@ -89,9 +89,17 @@ const StudentsPage = () => {
             {filtered.length} of {students.length} students
           </p>
         </div>
-        <Button onClick={() => { setEditingStudent(null); setFormOpen(true); }} className="gradient-primary text-primary-foreground">
-          <Plus className="mr-2 h-4 w-4" /> Add Student
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={() => exportStudentsExcel(students)}>
+            <FileSpreadsheet className="mr-1.5 h-3.5 w-3.5" /> Excel
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => exportStudentsCsv(students)}>
+            <FileText className="mr-1.5 h-3.5 w-3.5" /> CSV
+          </Button>
+          <Button onClick={() => { setEditingStudent(null); setFormOpen(true); }} className="gradient-primary text-primary-foreground">
+            <Plus className="mr-2 h-4 w-4" /> Add Student
+          </Button>
+        </div>
       </div>
 
       {/* Search & Filter */}
