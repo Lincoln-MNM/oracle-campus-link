@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 const StudentLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
   const [studentId, setStudentId] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,7 +39,12 @@ const StudentLogin = () => {
       const data = await res.json();
 
       if (data.status === "success") {
-        localStorage.setItem("userRole", "student");
+        login({
+          id: String(data.student_id || studentId),
+          name: data.name || studentId,
+          role: "student",
+          token: data.token || `jwt-${Date.now()}`,
+        });
         localStorage.setItem("studentId", studentId);
         toast({ title: "Login successful", description: "Welcome back!" });
         navigate("/student");
@@ -45,7 +52,12 @@ const StudentLogin = () => {
         toast({ title: "Login failed", description: data.message || "Invalid credentials", variant: "destructive" });
       }
     } catch {
-      localStorage.setItem("userRole", "student");
+      login({
+        id: studentId,
+        name: `Student ${studentId}`,
+        role: "student",
+        token: `demo-token-${Date.now()}`,
+      });
       localStorage.setItem("studentId", studentId);
       toast({ title: "Demo Mode", description: "Backend offline — logged in locally." });
       navigate("/student");
@@ -67,21 +79,14 @@ const StudentLogin = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="relative z-10 w-full max-w-md"
       >
-        <button
-          onClick={() => navigate("/")}
-          className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
+        <button onClick={() => navigate("/")} className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
           <ArrowLeft className="h-4 w-4" /> Back to Home
         </button>
 
         <div className="rounded-2xl border bg-card p-8 shadow-card">
           <div className="mb-8 text-center">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-              className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary"
-            >
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+              className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary">
               <GraduationCap className="h-8 w-8 text-secondary-foreground" />
             </motion.div>
             <h1 className="text-2xl font-bold font-display">Student Portal</h1>
@@ -93,13 +98,8 @@ const StudentLogin = () => {
               <Label htmlFor="studentId">Student ID</Label>
               <div className="relative">
                 <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="studentId"
-                  placeholder="Enter your student ID"
-                  className="pl-10"
-                  value={studentId}
-                  onChange={(e) => { setStudentId(e.target.value); setErrors((p) => ({ ...p, studentId: undefined })); }}
-                />
+                <Input id="studentId" placeholder="Enter your student ID" className="pl-10" value={studentId}
+                  onChange={(e) => { setStudentId(e.target.value); setErrors((p) => ({ ...p, studentId: undefined })); }} />
               </div>
               {errors.studentId && <p className="text-xs text-destructive">{errors.studentId}</p>}
             </motion.div>
@@ -108,14 +108,8 @@ const StudentLogin = () => {
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter password"
-                  className="pl-10"
-                  value={password}
-                  onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: undefined })); }}
-                />
+                <Input id="password" type="password" placeholder="Enter password" className="pl-10" value={password}
+                  onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: undefined })); }} />
               </div>
               {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
             </motion.div>
