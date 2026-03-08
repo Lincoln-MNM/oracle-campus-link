@@ -72,13 +72,13 @@ const HeroSection = () => {
           </p>
           <div className="hero-buttons mt-8 flex flex-wrap gap-4">
             <a
-              href="/login"
+              href="/login/admin"
               className="inline-flex items-center rounded-xl gradient-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 hover:shadow-soft animate-pulse-glow"
             >
               Login as Admin
             </a>
             <a
-              href="/login"
+              href="/login/student"
               className="inline-flex items-center rounded-xl border bg-card px-7 py-3.5 text-sm font-semibold transition-all hover:bg-muted hover:shadow-card-hover"
             >
               Login as Student
