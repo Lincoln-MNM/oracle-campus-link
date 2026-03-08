@@ -106,7 +106,7 @@ export function generateSemesterReportCard(
   const leave = studentRecords.filter((r) => r.status === "L").length;
   const pct = total > 0 ? Math.round((present / total) * 100) : 0;
 
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: y,
     head: [["Total Classes", "Present", "Absent", "Leave", "Attendance %", "Remark"]],
     body: [[String(total), String(present), String(absent), String(leave), `${pct}%`, getAttendanceRemark(pct)]],
