@@ -20,6 +20,17 @@ function getGrade(m: number) {
   return "F";
 }
 
+/** Helper to add student photo to PDF. Returns true if photo was added. */
+function addPhotoToPdf(doc: jsPDF, photoUrl: string | undefined, x: number, y: number, w: number, h: number): boolean {
+  if (!photoUrl || !photoUrl.startsWith("data:image")) return false;
+  try {
+    doc.addImage(photoUrl, "JPEG", x, y, w, h);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Generate a single student academic report PDF
  */
@@ -44,6 +55,9 @@ export function generateStudentReport(
   doc.text("Student Management System — BTech AI & Data Science", 105, 26, { align: "center" });
   doc.text(`Generated: ${new Date().toLocaleDateString()}`, 105, 34, { align: "center" });
 
+  // Student photo
+  const hasPhoto = addPhotoToPdf(doc, student.photo_url, 160, 48, 30, 36);
+
   // Student info
   doc.setTextColor(30, 30, 30);
   doc.setFontSize(14);
@@ -66,6 +80,11 @@ export function generateStudentReport(
     ["Email", student.email],
     ["Phone", student.phone || "N/A"],
   ];
+  if (student.father_name) info.push(["Father's Name", student.father_name]);
+  if (student.mother_name) info.push(["Mother's Name", student.mother_name]);
+  if (student.place) info.push(["Place", student.place]);
+  if (student.blood_group) info.push(["Blood Group", student.blood_group]);
+
   let y = 65;
   info.forEach(([label, val]) => {
     doc.setFont("helvetica", "bold");
@@ -113,11 +132,7 @@ export function generateStudentReport(
   if (allSubjects && allSubjects.length > 0) {
     const enrolledSubjects = allSubjects.filter((s) => s.semester <= student.semester);
     if (enrolledSubjects.length > 0) {
-      // Check if we need a new page
-      if (y > 230) {
-        doc.addPage();
-        y = 20;
-      }
+      if (y > 230) { doc.addPage(); y = 20; }
       doc.setFontSize(14);
       doc.setFont("helvetica", "bold");
       doc.text("Subjects Enrolled", 14, y);
@@ -139,10 +154,7 @@ export function generateStudentReport(
 
   // ── Semester-wise Marks ──
   if (marks.length > 0) {
-    if (y > 200) {
-      doc.addPage();
-      y = 20;
-    }
+    if (y > 200) { doc.addPage(); y = 20; }
 
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
@@ -150,7 +162,6 @@ export function generateStudentReport(
     doc.setDrawColor(37, 99, 235);
     doc.line(14, y + 3, 80, y + 3);
 
-    // Group by semester
     const semMap = new Map<number, MarkRow[]>();
     marks.forEach((m) => {
       const arr = semMap.get(m.semester) || [];
@@ -166,10 +177,7 @@ export function generateStudentReport(
       const semTotal = semMarks.reduce((s, m) => s + m.marks, 0);
       const semAvg = Math.round(semTotal / semMarks.length);
 
-      if (tableY > 240) {
-        doc.addPage();
-        tableY = 20;
-      }
+      if (tableY > 240) { doc.addPage(); tableY = 20; }
 
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
@@ -180,12 +188,7 @@ export function generateStudentReport(
         startY: tableY,
         head: [["Subject", "Marks (out of 100)", "Grade", "Status"]],
         body: [
-          ...semMarks.map((m) => [
-            m.subject_name,
-            String(m.marks),
-            getGrade(m.marks),
-            m.marks >= 50 ? "Pass" : "Fail",
-          ]),
+          ...semMarks.map((m) => [m.subject_name, String(m.marks), getGrade(m.marks), m.marks >= 50 ? "Pass" : "Fail"]),
           ["", "", "", ""],
           [{ content: `Semester Total: ${semTotal}  |  Average: ${semAvg}%  |  Grade: ${getGrade(semAvg)}`, colSpan: 4, styles: { fontStyle: "bold", fillColor: [230, 240, 255] } }],
         ],
@@ -198,10 +201,7 @@ export function generateStudentReport(
     }
 
     // Overall summary
-    if (tableY > 250) {
-      doc.addPage();
-      tableY = 20;
-    }
+    if (tableY > 250) { doc.addPage(); tableY = 20; }
     const totalMarks = marks.reduce((s, m) => s + m.marks, 0);
     const maxMarks = marks.length * 100;
 
@@ -214,9 +214,7 @@ export function generateStudentReport(
     doc.setFontSize(10);
     doc.text(
       `Total: ${totalMarks}/${maxMarks}  |  Average: ${avg}%  |  Grade: ${getGrade(avg)}  |  ${avg >= 50 ? "PASSED" : "FAILED"}`,
-      105,
-      tableY + 18,
-      { align: "center" }
+      105, tableY + 18, { align: "center" }
     );
   }
 
@@ -228,12 +226,7 @@ export function generateStudentReport(
     doc.setFontSize(7);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(120, 120, 120);
-    doc.text(
-      "This is a system-generated report from the Student Management System — BTech AI & Data Science",
-      105,
-      pageHeight - 8,
-      { align: "center" }
-    );
+    doc.text("This is a system-generated report from the Student Management System — BTech AI & Data Science", 105, pageHeight - 8, { align: "center" });
     doc.text(`Page ${i} of ${pageCount}`, 200, pageHeight - 8, { align: "right" });
   }
 
@@ -241,44 +234,102 @@ export function generateStudentReport(
 }
 
 /**
- * Generate a student ID card PDF
+ * Generate a student ID card PDF — credit-card sized (85.6mm × 53.98mm)
  */
 export function generateIdCard(student: Student) {
-  const doc = new jsPDF({ format: [86, 54], unit: "mm" });
+  const cardW = 85.6;
+  const cardH = 54;
+  const doc = new jsPDF({ format: [cardW, cardH], unit: "mm" });
 
+  // ── FRONT SIDE ──
+  // Background
   doc.setFillColor(37, 99, 235);
-  doc.rect(0, 0, 86, 18, "F");
+  doc.rect(0, 0, cardW, cardH, "F");
 
+  // White content area
+  doc.setFillColor(255, 255, 255);
+  doc.roundedRect(2, 14, cardW - 4, cardH - 16, 2, 2, "F");
+
+  // Header bar
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(9);
+  doc.setFontSize(7);
   doc.setFont("helvetica", "bold");
-  doc.text("STUDENT IDENTITY CARD", 43, 8, { align: "center" });
+  doc.text("RAJAGIRI SCHOOL OF ENGINEERING & TECHNOLOGY", cardW / 2, 5.5, { align: "center" });
+  doc.setFontSize(5.5);
+  doc.setFont("helvetica", "normal");
+  doc.text("BTech AI & Data Science", cardW / 2, 9.5, { align: "center" });
+  doc.setFontSize(5);
+  doc.text("STUDENT IDENTITY CARD", cardW / 2, 13, { align: "center" });
+
+  // Photo area
+  const photoX = 5;
+  const photoY = 17;
+  const photoW = 18;
+  const photoH = 22;
+
+  if (student.photo_url && student.photo_url.startsWith("data:image")) {
+    try {
+      doc.addImage(student.photo_url, "JPEG", photoX, photoY, photoW, photoH);
+      // Border around photo
+      doc.setDrawColor(37, 99, 235);
+      doc.setLineWidth(0.3);
+      doc.rect(photoX, photoY, photoW, photoH, "S");
+    } catch {
+      // Fallback: initials box
+      doc.setFillColor(230, 235, 245);
+      doc.roundedRect(photoX, photoY, photoW, photoH, 1, 1, "F");
+      doc.setTextColor(37, 99, 235);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text(student.name.charAt(0), photoX + photoW / 2, photoY + photoH / 2 + 4, { align: "center" });
+    }
+  } else {
+    doc.setFillColor(230, 235, 245);
+    doc.roundedRect(photoX, photoY, photoW, photoH, 1, 1, "F");
+    doc.setTextColor(37, 99, 235);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text(student.name.charAt(0), photoX + photoW / 2, photoY + photoH / 2 + 4, { align: "center" });
+  }
+
+  // Student details (right of photo)
+  const textX = 27;
+  let ty = 20;
+  doc.setTextColor(30, 30, 30);
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.text(student.name.length > 22 ? student.name.substring(0, 22) + "…" : student.name, textX, ty);
+
+  ty += 5;
   doc.setFontSize(6);
   doc.setFont("helvetica", "normal");
-  doc.text("BTech AI & Data Science", 43, 13, { align: "center" });
+  doc.setTextColor(80, 80, 80);
 
-  doc.setFillColor(230, 235, 245);
-  doc.roundedRect(5, 22, 18, 18, 2, 2, "F");
-  doc.setTextColor(37, 99, 235);
-  doc.setFontSize(14);
-  doc.setFont("helvetica", "bold");
-  doc.text(student.name.charAt(0), 14, 34, { align: "center" });
+  const fields = [
+    `UID: ${student.uid || student.student_id}`,
+    `Roll: ${student.rollNo || student.student_id}`,
+    `Sem: ${student.semester}  |  ${student.department}`,
+    `${student.blood_group ? "Blood: " + student.blood_group + "  |  " : ""}${student.gender}`,
+  ];
 
-  doc.setTextColor(30, 30, 30);
-  doc.setFontSize(9);
-  doc.setFont("helvetica", "bold");
-  doc.text(student.name, 28, 26);
-  doc.setFontSize(7);
-  doc.setFont("helvetica", "normal");
-  doc.text(`UID: ${student.uid || student.student_id}`, 28, 31);
-  doc.text(`Roll: ${student.rollNo || student.student_id}`, 28, 36);
-  doc.text(`Semester ${student.semester}`, 28, 41);
+  fields.forEach((f) => {
+    doc.text(f, textX, ty);
+    ty += 4;
+  });
 
+  // Contact row at bottom
   doc.setFillColor(37, 99, 235);
-  doc.rect(0, 48, 86, 6, "F");
+  doc.roundedRect(2, cardH - 7, cardW - 4, 5, 0, 0, "F");
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(5);
-  doc.text(`Email: ${student.email}`, 43, 52, { align: "center" });
+  doc.setFontSize(4.5);
+  doc.setFont("helvetica", "normal");
+  const contactText = student.email.length > 40 ? student.email.substring(0, 40) + "…" : student.email;
+  doc.text(contactText, cardW / 2, cardH - 3.8, { align: "center" });
+
+  // Validity text
+  doc.setTextColor(100, 100, 100);
+  doc.setFontSize(4);
+  doc.text("Valid for Academic Year 2024-25", cardW / 2, cardH - 9, { align: "center" });
 
   doc.save(`ID_Card_${student.rollNo || student.student_id}.pdf`);
 }

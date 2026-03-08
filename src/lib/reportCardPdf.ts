@@ -60,6 +60,18 @@ export function generateSemesterReportCard(
   doc.text(`Academic Year 2024-25  |  Semester ${semester}`, 105, 34, { align: "center" });
   doc.text(`Date of Issue: ${new Date().toLocaleDateString("en-IN")}`, 105, 40, { align: "center" });
 
+  // ── Student Photo ──
+  let hasPhoto = false;
+  if (student.photo_url && student.photo_url.startsWith("data:image")) {
+    try {
+      doc.addImage(student.photo_url, "JPEG", 164, 50, 28, 34);
+      doc.setDrawColor(37, 99, 235);
+      doc.setLineWidth(0.4);
+      doc.rect(164, 50, 28, 34, "S");
+      hasPhoto = true;
+    } catch { /* skip */ }
+  }
+
   // ── Student Details ──
   let y = 56;
   doc.setTextColor(30, 30, 30);
@@ -72,7 +84,7 @@ export function generateSemesterReportCard(
   y += 11;
 
   doc.setFontSize(10);
-  const details = [
+  const details: [string, string][] = [
     ["Name", student.name],
     ["UID", student.uid || `UID${String(student.student_id).padStart(3, "0")}`],
     ["Roll Number", student.rollNo || String(student.student_id)],
@@ -82,6 +94,11 @@ export function generateSemesterReportCard(
     ["Email", student.email],
     ["Phone", student.phone || "N/A"],
   ];
+  if (student.father_name) details.push(["Father's Name", student.father_name]);
+  if (student.mother_name) details.push(["Mother's Name", student.mother_name]);
+  if (student.place) details.push(["Place", student.place]);
+  if (student.blood_group) details.push(["Blood Group", student.blood_group]);
+
   details.forEach(([label, val]) => {
     doc.setFont("helvetica", "bold");
     doc.text(`${label}:`, 14, y);
@@ -136,12 +153,7 @@ export function generateSemesterReportCard(
       head: [["#", "Subject", "Max Marks", "Marks Obtained", "Grade", "Status"]],
       body: [
         ...semMarks.map((m, i) => [
-          String(i + 1),
-          m.subject_name,
-          "100",
-          String(m.marks),
-          getGrade(m.marks),
-          m.marks >= 50 ? "Pass" : "Fail",
+          String(i + 1), m.subject_name, "100", String(m.marks), getGrade(m.marks), m.marks >= 50 ? "Pass" : "Fail",
         ]),
         [
           { content: "", colSpan: 2 },
@@ -218,7 +230,6 @@ export function generateSemesterReportCard(
     doc.text("Head of Department", 168, y + 5, { align: "center" });
 
   } else {
-    // No marks for this semester — show enrolled subjects
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.text("No marks recorded for this semester.", 14, y);
