@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { logActivity } from "./useActivityLog";
 
 export type AttendanceStatus = "P" | "A" | "L";
 
@@ -145,6 +146,7 @@ export function useAttendance() {
       const exists = prev.findIndex((r) => r.id === record.id);
       const next = exists >= 0 ? prev.map((r, i) => (i === exists ? record : r)) : [...prev, record];
       saveAttendance(next);
+      logActivity({ action: "updated", entity: "Attendance", entityId: record.id, details: `Marked ${record.status} for student #${record.student_id} period ${record.period}`, user: "admin", role: "admin" });
       return next;
     });
   }, []);
@@ -155,6 +157,7 @@ export function useAttendance() {
       newRecords.forEach((r) => map.set(r.id, r));
       const next = Array.from(map.values());
       saveAttendance(next);
+      logActivity({ action: "updated", entity: "Attendance", entityId: "bulk", details: `Bulk marked ${newRecords.length} attendance records`, user: "admin", role: "admin" });
       return next;
     });
   }, []);
@@ -168,6 +171,7 @@ export function useAttendance() {
         );
       }
       saveTimetable(next);
+      logActivity({ action: "updated", entity: "Timetable", entityId: `${day}-P${period}`, details: `Changed ${day} period ${period} to ${subjectName}`, user: "admin", role: "admin" });
       return next;
     });
   }, []);

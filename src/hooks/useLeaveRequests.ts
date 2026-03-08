@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { logActivity } from "./useActivityLog";
 
 export type LeaveType = "Full Day" | "Half Day";
 export type LeaveStatus = "Pending" | "Approved" | "Rejected";
@@ -56,16 +57,20 @@ export function useLeaveRequests() {
 
   const addRequest = useCallback((data: Omit<LeaveRequest, "id" | "created_at" | "status">) => {
     setRequests((prev) => {
-      const next = [...prev, { ...data, id: `lr-${Date.now()}`, status: "Pending" as LeaveStatus, created_at: new Date().toISOString() }];
+      const newId = `lr-${Date.now()}`;
+      const next = [...prev, { ...data, id: newId, status: "Pending" as LeaveStatus, created_at: new Date().toISOString() }];
       save(next);
+      logActivity({ action: "created", entity: "Leave", entityId: newId, details: `${data.student_name} requested ${data.leave_type} leave`, user: data.student_name, role: "student" });
       return next;
     });
   }, []);
 
   const updateStatus = useCallback((id: string, status: LeaveStatus) => {
     setRequests((prev) => {
+      const req = prev.find((r) => r.id === id);
       const next = prev.map((r) => (r.id === id ? { ...r, status } : r));
       save(next);
+      logActivity({ action: "updated", entity: "Leave", entityId: id, details: `${status} leave for ${req?.student_name || id}`, user: "admin", role: "admin" });
       return next;
     });
   }, []);
