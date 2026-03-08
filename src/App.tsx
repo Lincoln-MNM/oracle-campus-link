@@ -9,8 +9,10 @@ import StudentLogin from "./pages/Login/StudentLogin";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import StudentsPage from "./pages/Admin/StudentsPage";
+import StudentProfile from "./pages/Admin/StudentProfile";
 import SubjectsPage from "./pages/Admin/SubjectsPage";
 import MarksPage from "./pages/Admin/MarksPage";
+import ReportsPage from "./pages/Admin/ReportsPage";
 import StudentDashboard from "./pages/Student/StudentDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -29,8 +31,10 @@ const App = () => (
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="students" element={<StudentsPage />} />
+            <Route path="students/:id" element={<StudentProfile />} />
             <Route path="subjects" element={<SubjectsPage />} />
             <Route path="marks" element={<MarksPage />} />
+            <Route path="reports" element={<ReportsPage />} />
           </Route>
           <Route path="/student" element={<StudentDashboard />} />
           <Route path="*" element={<NotFound />} />
