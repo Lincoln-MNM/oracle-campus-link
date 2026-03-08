@@ -83,6 +83,57 @@ const StudentDashboard = () => {
   const [attendanceFromDate, setAttendanceFromDate] = useState<Date | undefined>(undefined);
   const [attendanceToDate, setAttendanceToDate] = useState<Date | undefined>(undefined);
 
+  // Profile editing state
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    name: student?.name || "",
+    email: student?.email || "",
+    phone: student?.phone || "",
+    father_name: student?.father_name || "",
+    mother_name: student?.mother_name || "",
+    place: student?.place || "",
+    blood_group: student?.blood_group || "",
+    photo_url: student?.photo_url || "",
+  });
+
+  const bloodGroupOptions = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
+
+  const handleStartEdit = useCallback(() => {
+    if (!student) return;
+    setProfileForm({
+      name: student.name,
+      email: student.email,
+      phone: student.phone || "",
+      father_name: student.father_name || "",
+      mother_name: student.mother_name || "",
+      place: student.place || "",
+      blood_group: student.blood_group || "",
+      photo_url: student.photo_url || "",
+    });
+    setIsEditingProfile(true);
+  }, [student]);
+
+  const handleSaveProfile = useCallback(() => {
+    if (!student) return;
+    updateStudent({
+      ...student,
+      name: profileForm.name,
+      email: profileForm.email,
+      phone: profileForm.phone,
+      father_name: profileForm.father_name,
+      mother_name: profileForm.mother_name,
+      place: profileForm.place,
+      blood_group: profileForm.blood_group,
+      photo_url: profileForm.photo_url,
+    });
+    setIsEditingProfile(false);
+    toast({ title: "✅ Profile Updated", description: "Your details have been saved." });
+  }, [student, profileForm, updateStudent, toast]);
+
+  const setField = (key: string, value: string) => {
+    setProfileForm((prev) => ({ ...prev, [key]: value }));
+  };
+
   // My marks
   const myMarks = useMemo(() => {
     if (!student) return [];
