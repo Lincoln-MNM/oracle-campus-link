@@ -20,6 +20,10 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
+# Register blueprints
+from routes.auth import auth_bp
+app.register_blueprint(auth_bp)
+
 
 @app.route("/api/status", methods=["GET"])
 def status():
