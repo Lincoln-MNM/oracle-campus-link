@@ -6,14 +6,14 @@ const portals = [
     icon: ShieldCheck,
     title: "Admin Portal",
     description: "Manage students, subjects, marks, and generate academic reports with full control.",
-    href: "/login",
+    href: "/login/admin",
     gradient: true,
   },
   {
     icon: GraduationCap,
     title: "Student Portal",
     description: "View your academic results, semester marks, and personal performance dashboard.",
-    href: "/login",
+    href: "/login/student",
     gradient: false,
   },
 ];

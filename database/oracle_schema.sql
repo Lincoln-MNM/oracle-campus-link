@@ -5,6 +5,7 @@
 CREATE TABLE students (
     student_id  NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name        VARCHAR2(100) NOT NULL,
+    password    VARCHAR2(255) NOT NULL,
     dob         DATE,
     department  VARCHAR2(100),
     semester    NUMBER(2),
