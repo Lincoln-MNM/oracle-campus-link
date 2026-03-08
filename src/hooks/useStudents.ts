@@ -113,7 +113,7 @@ function loadStudents(): Student[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed.length > 0 && (!parsed[0].rollNo || !parsed[0].uid?.startsWith("UID"))) {
+      if (parsed.length > 0 && (!parsed[0].rollNo || !parsed[0].uid?.startsWith("UID") || !parsed[0].father_name)) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleStudents));
         return sampleStudents;
       }
