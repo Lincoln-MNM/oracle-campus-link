@@ -153,8 +153,18 @@ const StudentsPage = () => {
             <TableBody>
               {paginated.map((student) => (
                 <TableRow key={student.student_id} className="transition-colors hover:bg-muted/50">
-                  <TableCell className="font-mono text-sm">{student.student_id}</TableCell>
-                  <TableCell className="font-medium">{student.name}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      {student.photo_url ? (
+                        <img src={student.photo_url} alt="" className="h-7 w-7 rounded-full object-cover" />
+                      ) : (
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary text-xs font-bold text-secondary-foreground">
+                          {student.name.charAt(0)}
+                        </div>
+                      )}
+                      <span className="font-medium">{student.name}</span>
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <Badge variant="secondary" className="font-normal">{student.department}</Badge>
                   </TableCell>
