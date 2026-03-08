@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   GraduationCap, BookOpen, Award, TrendingUp, ClipboardList, LogOut, Megaphone, CalendarDays, Download,
-  DollarSign, ClipboardCheck, FileText, Clock, CheckCircle, XCircle, Send,
+  DollarSign, ClipboardCheck, FileText, Clock, CheckCircle, XCircle, Send, CalendarIcon, Filter,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +27,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { generateSemesterReportCard } from "@/lib/reportCardPdf";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 function getGradeLabel(marks: number) {
   if (marks >= 90) return "A+";
@@ -74,6 +78,8 @@ const StudentDashboard = () => {
   const [leaveType, setLeaveType] = useState<LeaveType>("Full Day");
   const [selectedSemester, setSelectedSemester] = useState("4");
   const [reportSemester, setReportSemester] = useState("4");
+  const [attendanceFromDate, setAttendanceFromDate] = useState<Date | undefined>(undefined);
+  const [attendanceToDate, setAttendanceToDate] = useState<Date | undefined>(undefined);
 
   // My marks
   const myMarks = useMemo(() => {
@@ -117,30 +123,39 @@ const StudentDashboard = () => {
     return { total, present, absent, leave, pct: total > 0 ? Math.round((present / total) * 100) : 0 };
   }, [student, records]);
 
-  // Build timetable view for last week
+  // Build timetable view — uses date range filter or defaults to last 2 weeks
   const attendanceTimetable = useMemo(() => {
     if (!student) return [];
     const today = new Date();
-    const daysData: { date: string; dayName: string; periods: { period: number; subject: string; status: AttendanceStatus }[] }[] = [];
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const daysData: { date: string; dayName: string; periods: { period: number; subject: string; status: AttendanceStatus }[] }[] = [];
 
-    for (let d = 6; d >= 0; d--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - d);
-      const dayName = dayNames[date.getDay()];
-      if (dayName === "Sunday") continue;
-      const dateStr = date.toISOString().split("T")[0];
-      const slots = timetable[dayName] || [];
-      const periods = slots.map((slot) => {
-        const record = records.find(
-          (r) => r.student_id === student.student_id && r.date === dateStr && r.period === slot.period
-        );
-        return { period: slot.period, subject: slot.subject_name, status: record?.status || ("—" as AttendanceStatus) };
-      });
-      daysData.push({ date: dateStr, dayName, periods });
+    // Determine date range
+    const fromDate = attendanceFromDate || new Date(today.getTime() - 13 * 24 * 60 * 60 * 1000);
+    const toDate = attendanceToDate || today;
+
+    const current = new Date(fromDate);
+    current.setHours(0, 0, 0, 0);
+    const end = new Date(toDate);
+    end.setHours(23, 59, 59, 999);
+
+    while (current <= end) {
+      const dayName = dayNames[current.getDay()];
+      if (dayName !== "Sunday") {
+        const dateStr = current.toISOString().split("T")[0];
+        const slots = timetable[dayName] || [];
+        const periods = slots.map((slot) => {
+          const record = records.find(
+            (r) => r.student_id === student.student_id && r.date === dateStr && r.period === slot.period
+          );
+          return { period: slot.period, subject: slot.subject_name, status: record?.status || ("—" as AttendanceStatus) };
+        });
+        daysData.push({ date: dateStr, dayName, periods });
+      }
+      current.setDate(current.getDate() + 1);
     }
     return daysData;
-  }, [student, records, timetable]);
+  }, [student, records, timetable, attendanceFromDate, attendanceToDate]);
 
   // My leaves
   const myLeaves = requests.filter((r) => r.student_id === student?.student_id);
@@ -381,46 +396,104 @@ const StudentDashboard = () => {
           </TabsContent>
 
           <TabsContent value="attendance" className="space-y-4">
+            {/* Date filter */}
+            <div className="rounded-xl border bg-card p-4 shadow-card">
+              <div className="flex flex-wrap items-end gap-4">
+                <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                  <Filter className="h-4 w-4" /> Filter by date:
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">From</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className={cn("w-[160px] justify-start text-left text-sm font-normal", !attendanceFromDate && "text-muted-foreground")}>
+                        <CalendarIcon className="mr-2 h-3.5 w-3.5" />
+                        {attendanceFromDate ? format(attendanceFromDate, "dd MMM yyyy") : "Start date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar mode="single" selected={attendanceFromDate} onSelect={setAttendanceFromDate} initialFocus className={cn("p-3 pointer-events-auto")} />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">To</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className={cn("w-[160px] justify-start text-left text-sm font-normal", !attendanceToDate && "text-muted-foreground")}>
+                        <CalendarIcon className="mr-2 h-3.5 w-3.5" />
+                        {attendanceToDate ? format(attendanceToDate, "dd MMM yyyy") : "End date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar mode="single" selected={attendanceToDate} onSelect={setAttendanceToDate} initialFocus className={cn("p-3 pointer-events-auto")} />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                {(attendanceFromDate || attendanceToDate) && (
+                  <Button variant="ghost" size="sm" onClick={() => { setAttendanceFromDate(undefined); setAttendanceToDate(undefined); }}>
+                    Clear filters
+                  </Button>
+                )}
+              </div>
+            </div>
+
             <div className="rounded-xl border bg-card shadow-card overflow-x-auto">
               <div className="p-4 border-b">
-                <h3 className="font-semibold font-display">Weekly Attendance Timetable</h3>
+                <h3 className="font-semibold font-display">
+                  Attendance Timetable
+                  {attendanceFromDate || attendanceToDate ? (
+                    <span className="ml-2 text-xs font-normal text-muted-foreground">
+                      ({attendanceFromDate ? format(attendanceFromDate, "dd MMM") : "..."} — {attendanceToDate ? format(attendanceToDate, "dd MMM") : "today"})
+                    </span>
+                  ) : (
+                    <span className="ml-2 text-xs font-normal text-muted-foreground">(Last 2 weeks)</span>
+                  )}
+                </h3>
                 <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded bg-emerald-500" /> Present</span>
                   <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded bg-red-500" /> Absent</span>
                   <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded bg-blue-500" /> Leave</span>
                 </div>
               </div>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="min-w-[100px]">Day</TableHead>
-                    {[1, 2, 3, 4, 5, 6].map((p) => (
-                      <TableHead key={p} className="text-center">P{p}</TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {attendanceTimetable.map((day) => (
-                    <TableRow key={day.date}>
-                      <TableCell>
-                        <div className="text-sm font-medium">{day.dayName}</div>
-                        <div className="text-[10px] text-muted-foreground">{day.date}</div>
-                      </TableCell>
-                      {day.periods.map((p) => (
-                        <TableCell key={p.period} className="text-center">
-                          {p.status === ("—" as any) ? (
-                            <span className="text-xs text-muted-foreground">—</span>
-                          ) : (
-                            <span className={`inline-flex h-7 w-7 items-center justify-center rounded text-xs font-bold ${statusColors[p.status]}`}>
-                              {p.status}
-                            </span>
-                          )}
-                        </TableCell>
+              {attendanceTimetable.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+                  <ClipboardCheck className="mb-3 h-10 w-10 opacity-40" />
+                  <p className="font-medium">No attendance records for this date range</p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="min-w-[100px]">Day</TableHead>
+                      {[1, 2, 3, 4, 5, 6].map((p) => (
+                        <TableHead key={p} className="text-center">P{p}</TableHead>
                       ))}
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {attendanceTimetable.map((day) => (
+                      <TableRow key={day.date}>
+                        <TableCell>
+                          <div className="text-sm font-medium">{day.dayName}</div>
+                          <div className="text-[10px] text-muted-foreground">{day.date}</div>
+                        </TableCell>
+                        {day.periods.map((p) => (
+                          <TableCell key={p.period} className="text-center">
+                            {p.status === ("—" as any) ? (
+                              <span className="text-xs text-muted-foreground">—</span>
+                            ) : (
+                              <span className={`inline-flex h-7 w-7 items-center justify-center rounded text-xs font-bold ${statusColors[p.status]}`}>
+                                {p.status}
+                              </span>
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </div>
 
             <div className="grid grid-cols-3 gap-4">

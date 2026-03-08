@@ -77,7 +77,7 @@ function generateSampleAttendance(): AttendanceRecord[] {
   const today = new Date();
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-  for (let d = 7; d >= 0; d--) {
+  for (let d = 21; d >= 0; d--) {
     const date = new Date(today);
     date.setDate(today.getDate() - d);
     const dayName = days[date.getDay()];
@@ -110,7 +110,8 @@ function loadAttendance(): AttendanceRecord[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed.length > 0) return parsed;
+      // Regenerate if old data has fewer records (was only 1 week)
+      if (parsed.length > 500) return parsed;
     }
   } catch { /* ignore */ }
   const data = generateSampleAttendance();
