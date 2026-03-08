@@ -176,7 +176,7 @@ export function generateStudentReport(
       doc.text(`Semester ${sem}`, 14, tableY);
       tableY += 5;
 
-      (doc as any).autoTable({
+      autoTable(doc, {
         startY: tableY,
         head: [["Subject", "Marks (out of 100)", "Grade", "Status"]],
         body: [
