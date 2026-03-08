@@ -15,6 +15,10 @@ export interface Student {
   password?: string;
   photo_url?: string;
   registered?: boolean;
+  father_name?: string;
+  mother_name?: string;
+  place?: string;
+  blood_group?: string;
 }
 
 const STORAGE_KEY = "sms_students";
