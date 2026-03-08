@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 import type { Student } from "@/hooks/useStudents";
+import PhotoUpload from "@/components/Admin/PhotoUpload";
 
 interface Props {
   open: boolean;
@@ -16,7 +17,7 @@ interface Props {
 
 const departments = ["Computer Science", "Information Technology", "Electronics", "Mechanical", "Civil", "Electrical"];
 
-const emptyForm = { name: "", department: "", semester: 1, email: "", phone: "", password: "" };
+const emptyForm = { name: "", department: "", semester: 1, email: "", phone: "", password: "", photo_url: "" };
 
 const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
   const [form, setForm] = useState(emptyForm);
@@ -32,6 +33,7 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
         email: student.email,
         phone: student.phone || "",
         password: "",
+        photo_url: student.photo_url || "",
       });
     } else {
       setForm(emptyForm);
@@ -55,7 +57,6 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
     e.preventDefault();
     if (!validate()) return;
     setSaving(true);
-    // Simulate brief network delay
     await new Promise((r) => setTimeout(r, 400));
     onSave({ ...form, semester: Number(form.semester) });
     setSaving(false);
@@ -68,11 +69,20 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-display">{student ? "Edit Student" : "Add New Student"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="mt-2 space-y-4">
+          {/* Photo upload */}
+          <div className="space-y-1.5">
+            <Label>Profile Photo</Label>
+            <PhotoUpload
+              value={form.photo_url || undefined}
+              onChange={(url) => setForm((p) => ({ ...p, photo_url: url || "" }))}
+            />
+          </div>
+
           {/* Name */}
           <div className="space-y-1.5">
             <Label htmlFor="name">Full Name</Label>
@@ -94,14 +104,7 @@ const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="semester">Semester</Label>
-              <Input
-                id="semester"
-                type="number"
-                min={1}
-                max={8}
-                value={form.semester}
-                onChange={(e) => set("semester", Number(e.target.value))}
-              />
+              <Input id="semester" type="number" min={1} max={8} value={form.semester} onChange={(e) => set("semester", Number(e.target.value))} />
               {errors.semester && <p className="text-xs text-destructive">{errors.semester}</p>}
             </div>
           </div>

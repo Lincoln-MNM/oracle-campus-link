@@ -8,6 +8,7 @@ export interface Student {
   email: string;
   phone?: string;
   password?: string;
+  photo_url?: string;
 }
 
 const STORAGE_KEY = "sms_students";

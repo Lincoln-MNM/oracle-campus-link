@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Plus, Search, Pencil, Trash2, Users, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, Users, ChevronLeft, ChevronRight, Eye, FileSpreadsheet, FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -16,10 +17,12 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useStudents, Student } from "@/hooks/useStudents";
 import StudentFormDialog from "@/components/Admin/StudentFormDialog";
+import { exportStudentsExcel, exportStudentsCsv } from "@/lib/pdfExport";
 
 const PAGE_SIZE = 10;
 
 const StudentsPage = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { students, addStudent, updateStudent, removeStudent } = useStudents();
   const [search, setSearch] = useState("");
@@ -86,9 +89,17 @@ const StudentsPage = () => {
             {filtered.length} of {students.length} students
           </p>
         </div>
-        <Button onClick={() => { setEditingStudent(null); setFormOpen(true); }} className="gradient-primary text-primary-foreground">
-          <Plus className="mr-2 h-4 w-4" /> Add Student
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={() => exportStudentsExcel(students)}>
+            <FileSpreadsheet className="mr-1.5 h-3.5 w-3.5" /> Excel
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => exportStudentsCsv(students)}>
+            <FileText className="mr-1.5 h-3.5 w-3.5" /> CSV
+          </Button>
+          <Button onClick={() => { setEditingStudent(null); setFormOpen(true); }} className="gradient-primary text-primary-foreground">
+            <Plus className="mr-2 h-4 w-4" /> Add Student
+          </Button>
+        </div>
       </div>
 
       {/* Search & Filter */}
@@ -142,8 +153,18 @@ const StudentsPage = () => {
             <TableBody>
               {paginated.map((student) => (
                 <TableRow key={student.student_id} className="transition-colors hover:bg-muted/50">
-                  <TableCell className="font-mono text-sm">{student.student_id}</TableCell>
-                  <TableCell className="font-medium">{student.name}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      {student.photo_url ? (
+                        <img src={student.photo_url} alt="" className="h-7 w-7 rounded-full object-cover" />
+                      ) : (
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary text-xs font-bold text-secondary-foreground">
+                          {student.name.charAt(0)}
+                        </div>
+                      )}
+                      <span className="font-medium">{student.name}</span>
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <Badge variant="secondary" className="font-normal">{student.department}</Badge>
                   </TableCell>
@@ -151,6 +172,9 @@ const StudentsPage = () => {
                   <TableCell className="text-muted-foreground">{student.email}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
+                      <Button variant="ghost" size="icon" onClick={() => navigate(`/admin/students/${student.student_id}`)} title="View Profile">
+                        <Eye className="h-4 w-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" onClick={() => { setEditingStudent(student); setFormOpen(true); }}>
                         <Pencil className="h-4 w-4" />
                       </Button>
