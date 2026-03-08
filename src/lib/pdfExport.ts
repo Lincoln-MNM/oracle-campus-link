@@ -341,7 +341,7 @@ export function exportMarksReport(
   doc.setFont("helvetica", "normal");
   doc.text(`Generated: ${new Date().toLocaleDateString()}`, 105, 26, { align: "center" });
 
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: 42,
     head: [["Student", "Subject", "Semester", "Marks", "Grade", "Status"]],
     body: marks.map((m) => [

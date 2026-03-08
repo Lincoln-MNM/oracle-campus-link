@@ -131,7 +131,7 @@ export function generateSemesterReportCard(
     const semTotal = semMarks.reduce((s, m) => s + m.marks, 0);
     const semAvg = Math.round(semTotal / semMarks.length);
 
-    (doc as any).autoTable({
+    autoTable(doc, {
       startY: y,
       head: [["#", "Subject", "Max Marks", "Marks Obtained", "Grade", "Status"]],
       body: [
