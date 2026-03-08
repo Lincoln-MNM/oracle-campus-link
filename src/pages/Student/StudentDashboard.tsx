@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   GraduationCap, BookOpen, Award, TrendingUp, ClipboardList, LogOut, Megaphone, CalendarDays, Download,
   DollarSign, ClipboardCheck, FileText, Clock, CheckCircle, XCircle, Send, CalendarIcon, Filter, TableIcon,
-  User, MapPin, Droplets, Phone, Mail, Hash,
+  User, MapPin, Droplets, Phone, Mail, Hash, Save, Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -82,6 +82,57 @@ const StudentDashboard = () => {
   const [reportSemester, setReportSemester] = useState("4");
   const [attendanceFromDate, setAttendanceFromDate] = useState<Date | undefined>(undefined);
   const [attendanceToDate, setAttendanceToDate] = useState<Date | undefined>(undefined);
+
+  // Profile editing state
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    name: student?.name || "",
+    email: student?.email || "",
+    phone: student?.phone || "",
+    father_name: student?.father_name || "",
+    mother_name: student?.mother_name || "",
+    place: student?.place || "",
+    blood_group: student?.blood_group || "",
+    photo_url: student?.photo_url || "",
+  });
+
+  const bloodGroupOptions = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
+
+  const handleStartEdit = useCallback(() => {
+    if (!student) return;
+    setProfileForm({
+      name: student.name,
+      email: student.email,
+      phone: student.phone || "",
+      father_name: student.father_name || "",
+      mother_name: student.mother_name || "",
+      place: student.place || "",
+      blood_group: student.blood_group || "",
+      photo_url: student.photo_url || "",
+    });
+    setIsEditingProfile(true);
+  }, [student]);
+
+  const handleSaveProfile = useCallback(() => {
+    if (!student) return;
+    updateStudent({
+      ...student,
+      name: profileForm.name,
+      email: profileForm.email,
+      phone: profileForm.phone,
+      father_name: profileForm.father_name,
+      mother_name: profileForm.mother_name,
+      place: profileForm.place,
+      blood_group: profileForm.blood_group,
+      photo_url: profileForm.photo_url,
+    });
+    setIsEditingProfile(false);
+    toast({ title: "✅ Profile Updated", description: "Your details have been saved." });
+  }, [student, profileForm, updateStudent, toast]);
+
+  const setField = (key: string, value: string) => {
+    setProfileForm((prev) => ({ ...prev, [key]: value }));
+  };
 
   // My marks
   const myMarks = useMemo(() => {
@@ -269,110 +320,160 @@ const StudentDashboard = () => {
           {/* PROFILE TAB */}
           <TabsContent value="profile" className="space-y-4">
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border bg-card p-6 shadow-card">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold font-display">Personal Details</h2>
+                {!isEditingProfile ? (
+                  <Button variant="outline" size="sm" onClick={handleStartEdit}>
+                    <Pencil className="mr-1.5 h-3.5 w-3.5" /> Edit Profile
+                  </Button>
+                ) : (
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => setIsEditingProfile(false)}>Cancel</Button>
+                    <Button size="sm" className="gradient-primary text-primary-foreground" onClick={handleSaveProfile}>
+                      <Save className="mr-1.5 h-3.5 w-3.5" /> Save Changes
+                    </Button>
+                  </div>
+                )}
+              </div>
+
               <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
                 {/* Photo */}
                 <div className="shrink-0">
-                  <PhotoUpload
-                    value={student.photo_url}
-                    onChange={(url) => {
-                      const updated = { ...student, photo_url: url || "" };
-                      updateStudent(updated);
-                    }}
-                  />
+                  {isEditingProfile ? (
+                    <PhotoUpload
+                      value={profileForm.photo_url || undefined}
+                      onChange={(url) => setField("photo_url", url || "")}
+                    />
+                  ) : (
+                    <div className="flex h-32 w-32 items-center justify-center rounded-2xl bg-secondary text-4xl font-bold font-display text-secondary-foreground overflow-hidden border">
+                      {student.photo_url ? (
+                        <img src={student.photo_url} alt={student.name} className="h-full w-full object-cover" />
+                      ) : (
+                        student.name.charAt(0)
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Details grid */}
-                <div className="flex-1 space-y-4">
-                  <h2 className="text-xl font-bold font-display">Personal Details</h2>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
-                      <User className="h-4 w-4 text-muted-foreground shrink-0" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">Full Name</p>
-                        <p className="text-sm font-medium">{student.name}</p>
+                <div className="flex-1">
+                  {isEditingProfile ? (
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-1.5">
+                        <Label>Full Name</Label>
+                        <Input value={profileForm.name} onChange={(e) => setField("name", e.target.value)} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Email</Label>
+                        <Input type="email" value={profileForm.email} onChange={(e) => setField("email", e.target.value)} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Phone</Label>
+                        <Input value={profileForm.phone} onChange={(e) => setField("phone", e.target.value)} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Father's Name</Label>
+                        <Input value={profileForm.father_name} onChange={(e) => setField("father_name", e.target.value)} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Mother's Name</Label>
+                        <Input value={profileForm.mother_name} onChange={(e) => setField("mother_name", e.target.value)} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Place</Label>
+                        <Input value={profileForm.place} onChange={(e) => setField("place", e.target.value)} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Blood Group</Label>
+                        <Select value={profileForm.blood_group} onValueChange={(v) => setField("blood_group", v)}>
+                          <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                          <SelectContent>
+                            {bloodGroupOptions.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
-                      <Hash className="h-4 w-4 text-muted-foreground shrink-0" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">UID</p>
-                        <p className="text-sm font-medium">{student.uid}</p>
+                  ) : (
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                        <User className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Full Name</p>
+                          <p className="text-sm font-medium">{student.name}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
-                      <Hash className="h-4 w-4 text-muted-foreground shrink-0" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">Roll Number</p>
-                        <p className="text-sm font-medium">{student.rollNo}</p>
+                      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                        <Hash className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">UID</p>
+                          <p className="text-sm font-medium">{student.uid}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
-                      <GraduationCap className="h-4 w-4 text-muted-foreground shrink-0" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">Department</p>
-                        <p className="text-sm font-medium">{student.department}</p>
+                      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                        <Hash className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Roll Number</p>
+                          <p className="text-sm font-medium">{student.rollNo}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
-                      <BookOpen className="h-4 w-4 text-muted-foreground shrink-0" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">Course / Semester</p>
-                        <p className="text-sm font-medium">{student.course} · Sem {student.semester}</p>
+                      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                        <GraduationCap className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Department</p>
+                          <p className="text-sm font-medium">{student.department}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
-                      <Mail className="h-4 w-4 text-muted-foreground shrink-0" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">Email</p>
-                        <p className="text-sm font-medium">{student.email}</p>
+                      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                        <BookOpen className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Course / Semester</p>
+                          <p className="text-sm font-medium">{student.course} · Sem {student.semester}</p>
+                        </div>
                       </div>
-                    </div>
-                    {student.phone && (
+                      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                        <Mail className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Email</p>
+                          <p className="text-sm font-medium">{student.email}</p>
+                        </div>
+                      </div>
                       <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
                         <Phone className="h-4 w-4 text-muted-foreground shrink-0" />
                         <div>
                           <p className="text-xs text-muted-foreground">Phone</p>
-                          <p className="text-sm font-medium">{student.phone}</p>
+                          <p className="text-sm font-medium">{student.phone || "—"}</p>
                         </div>
                       </div>
-                    )}
-                    {student.father_name && (
                       <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
                         <User className="h-4 w-4 text-muted-foreground shrink-0" />
                         <div>
                           <p className="text-xs text-muted-foreground">Father's Name</p>
-                          <p className="text-sm font-medium">{student.father_name}</p>
+                          <p className="text-sm font-medium">{student.father_name || "—"}</p>
                         </div>
                       </div>
-                    )}
-                    {student.mother_name && (
                       <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
                         <User className="h-4 w-4 text-muted-foreground shrink-0" />
                         <div>
                           <p className="text-xs text-muted-foreground">Mother's Name</p>
-                          <p className="text-sm font-medium">{student.mother_name}</p>
+                          <p className="text-sm font-medium">{student.mother_name || "—"}</p>
                         </div>
                       </div>
-                    )}
-                    {student.place && (
                       <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
                         <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
                         <div>
                           <p className="text-xs text-muted-foreground">Place</p>
-                          <p className="text-sm font-medium">{student.place}</p>
+                          <p className="text-sm font-medium">{student.place || "—"}</p>
                         </div>
                       </div>
-                    )}
-                    {student.blood_group && (
                       <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
                         <Droplets className="h-4 w-4 text-muted-foreground shrink-0" />
                         <div>
                           <p className="text-xs text-muted-foreground">Blood Group</p>
-                          <p className="text-sm font-medium">{student.blood_group}</p>
+                          <p className="text-sm font-medium">{student.blood_group || "—"}</p>
                         </div>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
