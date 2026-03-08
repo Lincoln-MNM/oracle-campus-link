@@ -78,6 +78,8 @@ const StudentDashboard = () => {
   const [leaveType, setLeaveType] = useState<LeaveType>("Full Day");
   const [selectedSemester, setSelectedSemester] = useState("4");
   const [reportSemester, setReportSemester] = useState("4");
+  const [attendanceFromDate, setAttendanceFromDate] = useState<Date | undefined>(undefined);
+  const [attendanceToDate, setAttendanceToDate] = useState<Date | undefined>(undefined);
 
   // My marks
   const myMarks = useMemo(() => {
