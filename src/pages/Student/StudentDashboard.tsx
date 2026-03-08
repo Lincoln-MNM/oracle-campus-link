@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import {
   GraduationCap, BookOpen, Award, TrendingUp, ClipboardList, LogOut, Megaphone, CalendarDays, Download,
   DollarSign, ClipboardCheck, FileText, Clock, CheckCircle, XCircle, Send, CalendarIcon, Filter, TableIcon,
+  User, MapPin, Droplets, Phone, Mail, Hash,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatCard from "@/components/Cards/StatCard";
+import PhotoUpload from "@/components/Admin/PhotoUpload";
 import { useStudents } from "@/hooks/useStudents";
 import { useSubjects } from "@/hooks/useSubjects";
 import { useMarks } from "@/hooks/useMarks";
