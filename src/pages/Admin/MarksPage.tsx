@@ -35,9 +35,7 @@ const MarksPage = () => {
 
   const [search, setSearch] = useState("");
   const [semFilter, setSemFilter] = useState("all");
-  const [formOpen, setFormOpen] = useState(false);
-  const [editing, setEditing] = useState<Mark | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<MarkJoined | null>(null);
+  const [subjectFilter, setSubjectFilter] = useState("all");
 
   // JOIN marks with students and subjects
   const joined: MarkJoined[] = useMemo(() => {
@@ -59,12 +57,25 @@ const MarksPage = () => {
       .filter(Boolean) as MarkJoined[];
   }, [marks, students, subjects]);
 
+  // Subjects available for the selected semester
+  const availableSubjects = useMemo(() => {
+    if (semFilter === "all") return subjects;
+    return subjects.filter((s) => s.semester === Number(semFilter));
+  }, [subjects, semFilter]);
+
+  // Reset subject filter when semester changes
+  const handleSemChange = (val: string) => {
+    setSemFilter(val);
+    setSubjectFilter("all");
+  };
+
   const filtered = joined.filter((r) => {
     const matchSearch =
       r.student_name.toLowerCase().includes(search.toLowerCase()) ||
       r.subject_name.toLowerCase().includes(search.toLowerCase());
     const matchSem = semFilter === "all" || r.semester === Number(semFilter);
-    return matchSearch && matchSem;
+    const matchSubject = subjectFilter === "all" || r.subject_id === Number(subjectFilter);
+    return matchSearch && matchSem && matchSubject;
   });
 
   const handleSave = (data: Omit<Mark, "mark_id"> & { mark_id?: number }) => {
