@@ -1,0 +1,58 @@
+STUDENT MANAGEMENT SYSTEM — STUDENT DATASET (50 Records)
+=========================================================
+Format: UID | Roll Number | Name | Gender | Email | Phone | Course | Department | Semester | Password
+=========================================================
+
+UID001 | U2408001 | Arjun Nair | Male | arjun.nair@student.edu | 9876543210 | BTech AI & Data Science | AI & Data Science | Sem 1 | studentUID001
+UID002 | U2408002 | Ananya Das | Female | ananya.das@student.edu | 9876543211 | BTech AI & Data Science | AI & Data Science | Sem 2 | studentUID002
+UID003 | U2408003 | Gouri Nandhana | Female | gouri.nandhana@student.edu | 9876543212 | BTech AI & Data Science | AI & Data Science | Sem 3 | studentUID003
+UID004 | U2408004 | Aardra Jee | Female | aardra.jee@student.edu | 9876543213 | BTech AI & Data Science | AI & Data Science | Sem 4 | studentUID004
+UID005 | U2408005 | Aavani U | Female | aavani.u@student.edu | 9876543214 | BTech AI & Data Science | AI & Data Science | Sem 5 | studentUID005
+UID006 | U2408006 | Abraham Chirayath Martin | Male | abraham.martin@student.edu | 9876543215 | BTech AI & Data Science | AI & Data Science | Sem 6 | studentUID006
+UID007 | U2408007 | Adithya Sreepad BS | Male | adithya.bs@student.edu | 9876543216 | BTech AI & Data Science | AI & Data Science | Sem 7 | studentUID007
+UID008 | U2408008 | Akash Kumar | Male | akash.kumar@student.edu | 9876543217 | BTech AI & Data Science | AI & Data Science | Sem 8 | studentUID008
+UID009 | U2408009 | Bhavya Raj | Female | bhavya.raj@student.edu | 9876543218 | BTech AI & Data Science | AI & Data Science | Sem 1 | studentUID009
+UID010 | U2408010 | Chaitra S | Female | chaitra.s@student.edu | 9876543219 | BTech AI & Data Science | AI & Data Science | Sem 2 | studentUID010
+UID011 | U2408011 | Deepak Mohan | Male | deepak.mohan@student.edu | 9876543220 | BTech AI & Data Science | AI & Data Science | Sem 3 | studentUID011
+UID012 | U2408012 | Divya Lakshmi | Female | divya.lakshmi@student.edu | 9876543221 | BTech AI & Data Science | AI & Data Science | Sem 4 | studentUID012
+UID013 | U2408013 | Eshan Varma | Male | eshan.varma@student.edu | 9876543222 | BTech AI & Data Science | AI & Data Science | Sem 5 | studentUID013
+UID014 | U2408014 | Fathima Zahra | Female | fathima.zahra@student.edu | 9876543223 | BTech AI & Data Science | AI & Data Science | Sem 6 | studentUID014
+UID015 | U2408015 | Ganesh Pillai | Male | ganesh.pillai@student.edu | 9876543224 | BTech AI & Data Science | AI & Data Science | Sem 7 | studentUID015
+UID016 | U2408016 | Harini Devi | Female | harini.devi@student.edu | 9876543225 | BTech AI & Data Science | AI & Data Science | Sem 8 | studentUID016
+UID017 | U2408017 | Ishaan Bhat | Male | ishaan.bhat@student.edu | 9876543226 | BTech AI & Data Science | AI & Data Science | Sem 1 | studentUID017
+UID018 | U2408018 | Jaya Krishnan | Male | jaya.krishnan@student.edu | 9876543227 | BTech AI & Data Science | AI & Data Science | Sem 2 | studentUID018
+UID019 | U2408019 | Kavya Suresh | Female | kavya.suresh@student.edu | 9876543228 | BTech AI & Data Science | AI & Data Science | Sem 3 | studentUID019
+UID020 | U2408020 | Lakshmi Priya | Female | lakshmi.priya@student.edu | 9876543229 | BTech AI & Data Science | AI & Data Science | Sem 4 | studentUID020
+UID021 | U2408021 | Manoj Thomas | Male | manoj.thomas@student.edu | 9876543230 | BTech AI & Data Science | AI & Data Science | Sem 5 | studentUID021
+UID022 | U2408022 | Neha George | Female | neha.george@student.edu | 9876543231 | BTech AI & Data Science | AI & Data Science | Sem 6 | studentUID022
+UID023 | U2408023 | Om Prakash | Male | om.prakash@student.edu | 9876543232 | BTech AI & Data Science | AI & Data Science | Sem 7 | studentUID023
+UID024 | U2408024 | Pooja Menon | Female | pooja.menon@student.edu | 9876543233 | BTech AI & Data Science | AI & Data Science | Sem 8 | studentUID024
+UID025 | U2408025 | Rahul Das | Male | rahul.das@student.edu | 9876543234 | BTech AI & Data Science | AI & Data Science | Sem 1 | studentUID025
+UID026 | U2408026 | Sanjana Nair | Female | sanjana.nair@student.edu | 9876543235 | BTech AI & Data Science | AI & Data Science | Sem 2 | studentUID026
+UID027 | U2408027 | Tejas Kumar | Male | tejas.kumar@student.edu | 9876543236 | BTech AI & Data Science | AI & Data Science | Sem 3 | studentUID027
+UID028 | U2408028 | Uma Maheshwari | Female | uma.maheshwari@student.edu | 9876543237 | BTech AI & Data Science | AI & Data Science | Sem 4 | studentUID028
+UID029 | U2408029 | Varun Krishnan | Male | varun.krishnan@student.edu | 9876543238 | BTech AI & Data Science | AI & Data Science | Sem 5 | studentUID029
+UID030 | U2408030 | Wafa Siddiqui | Female | wafa.siddiqui@student.edu | 9876543239 | BTech AI & Data Science | AI & Data Science | Sem 6 | studentUID030
+UID031 | U2408031 | Xavier Joseph | Male | xavier.joseph@student.edu | 9876543240 | BTech AI & Data Science | AI & Data Science | Sem 7 | studentUID031
+UID032 | U2408032 | Yamini Reddy | Female | yamini.reddy@student.edu | 9876543241 | BTech AI & Data Science | AI & Data Science | Sem 8 | studentUID032
+UID033 | U2408033 | Zaid Ahmed | Male | zaid.ahmed@student.edu | 9876543242 | BTech AI & Data Science | AI & Data Science | Sem 1 | studentUID033
+UID034 | U2408034 | Aditya Raj | Male | aditya.raj@student.edu | 9876543243 | BTech AI & Data Science | AI & Data Science | Sem 2 | studentUID034
+UID035 | U2408035 | Bhoomika Shetty | Female | bhoomika.shetty@student.edu | 9876543244 | BTech AI & Data Science | AI & Data Science | Sem 3 | studentUID035
+UID036 | U2408036 | Chirag Patel | Male | chirag.patel@student.edu | 9876543245 | BTech AI & Data Science | AI & Data Science | Sem 4 | studentUID036
+UID037 | U2408037 | Diya Sharma | Female | diya.sharma@student.edu | 9876543246 | BTech AI & Data Science | AI & Data Science | Sem 5 | studentUID037
+UID038 | U2408038 | Eshwar Nair | Male | eshwar.nair@student.edu | 9876543247 | BTech AI & Data Science | AI & Data Science | Sem 6 | studentUID038
+UID039 | U2408039 | Faisal Khan | Male | faisal.khan@student.edu | 9876543248 | BTech AI & Data Science | AI & Data Science | Sem 7 | studentUID039
+UID040 | U2408040 | Gayathri Menon | Female | gayathri.menon@student.edu | 9876543249 | BTech AI & Data Science | AI & Data Science | Sem 8 | studentUID040
+UID041 | U2408041 | Hari Prasad | Male | hari.prasad@student.edu | 9876543250 | BTech AI & Data Science | AI & Data Science | Sem 1 | studentUID041
+UID042 | U2408042 | Isha Gupta | Female | isha.gupta@student.edu | 9876543251 | BTech AI & Data Science | AI & Data Science | Sem 2 | studentUID042
+UID043 | U2408043 | Jayesh Pillai | Male | jayesh.pillai@student.edu | 9876543252 | BTech AI & Data Science | AI & Data Science | Sem 3 | studentUID043
+UID044 | U2408044 | Krithika Rajan | Female | krithika.rajan@student.edu | 9876543253 | BTech AI & Data Science | AI & Data Science | Sem 4 | studentUID044
+UID045 | U2408045 | Lekha Suresh | Female | lekha.suresh@student.edu | 9876543254 | BTech AI & Data Science | AI & Data Science | Sem 5 | studentUID045
+UID046 | U2408046 | Meera Krishnan | Female | meera.krishnan@student.edu | 9876543255 | BTech AI & Data Science | AI & Data Science | Sem 6 | studentUID046
+UID047 | U2408047 | Nithin Thomas | Male | nithin.thomas@student.edu | 9876543256 | BTech AI & Data Science | AI & Data Science | Sem 7 | studentUID047
+UID048 | U2408048 | Oviya Raj | Female | oviya.raj@student.edu | 9876543257 | BTech AI & Data Science | AI & Data Science | Sem 8 | studentUID048
+UID049 | U2408049 | Pranav Mohan | Male | pranav.mohan@student.edu | 9876543258 | BTech AI & Data Science | AI & Data Science | Sem 1 | studentUID049
+UID050 | U2408050 | Riya Nair | Female | riya.nair@student.edu | 9876543259 | BTech AI & Data Science | AI & Data Science | Sem 2 | studentUID050
+
+=========================================================
+END OF DATASET
