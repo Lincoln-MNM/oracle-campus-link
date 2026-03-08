@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useStudents } from "@/hooks/useStudents";
 import { useMarks } from "@/hooks/useMarks";
 import { useSubjects } from "@/hooks/useSubjects";
+import { useAttendance } from "@/hooks/useAttendance";
 import { generateStudentReport, generateIdCard } from "@/lib/pdfExport";
 
 function getGradeLabel(m: number) {
