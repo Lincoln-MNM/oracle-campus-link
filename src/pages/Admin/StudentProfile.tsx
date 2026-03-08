@@ -35,6 +35,7 @@ const StudentProfile = () => {
   const { students } = useStudents();
   const { marks } = useMarks();
   const { subjects } = useSubjects();
+  const { records: attendanceRecords } = useAttendance();
 
   const student = students.find((s) => s.student_id === Number(id));
 
