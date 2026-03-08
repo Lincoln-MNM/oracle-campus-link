@@ -1,5 +1,5 @@
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import type { Student } from "@/hooks/useStudents";
 import type { AttendanceRecord } from "@/hooks/useAttendance";
@@ -92,7 +92,7 @@ export function generateStudentReport(
     const leave = studentRecords.filter((r) => r.status === "L").length;
     const pct = total > 0 ? Math.round((present / total) * 100) : 0;
 
-    (doc as any).autoTable({
+    autoTable(doc, {
       startY: y,
       head: [["Total Classes", "Present", "Absent", "Leave", "Attendance %"]],
       body: [[String(total), String(present), String(absent), String(leave), `${pct}%`]],
@@ -124,7 +124,7 @@ export function generateStudentReport(
       doc.setDrawColor(37, 99, 235);
       doc.line(14, y + 3, 80, y + 3);
 
-      (doc as any).autoTable({
+      autoTable(doc, {
         startY: y + 8,
         head: [["#", "Subject Name", "Semester"]],
         body: enrolledSubjects.map((s, i) => [String(i + 1), s.subject_name, `Semester ${s.semester}`]),
@@ -176,7 +176,7 @@ export function generateStudentReport(
       doc.text(`Semester ${sem}`, 14, tableY);
       tableY += 5;
 
-      (doc as any).autoTable({
+      autoTable(doc, {
         startY: tableY,
         head: [["Subject", "Marks (out of 100)", "Grade", "Status"]],
         body: [
@@ -341,7 +341,7 @@ export function exportMarksReport(
   doc.setFont("helvetica", "normal");
   doc.text(`Generated: ${new Date().toLocaleDateString()}`, 105, 26, { align: "center" });
 
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: 42,
     head: [["Student", "Subject", "Semester", "Marks", "Grade", "Status"]],
     body: marks.map((m) => [

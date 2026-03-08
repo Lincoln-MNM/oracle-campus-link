@@ -1,5 +1,5 @@
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import type { Student } from "@/hooks/useStudents";
 import type { AttendanceRecord } from "@/hooks/useAttendance";
 
@@ -106,7 +106,7 @@ export function generateSemesterReportCard(
   const leave = studentRecords.filter((r) => r.status === "L").length;
   const pct = total > 0 ? Math.round((present / total) * 100) : 0;
 
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: y,
     head: [["Total Classes", "Present", "Absent", "Leave", "Attendance %", "Remark"]],
     body: [[String(total), String(present), String(absent), String(leave), `${pct}%`, getAttendanceRemark(pct)]],
@@ -131,7 +131,7 @@ export function generateSemesterReportCard(
     const semTotal = semMarks.reduce((s, m) => s + m.marks, 0);
     const semAvg = Math.round(semTotal / semMarks.length);
 
-    (doc as any).autoTable({
+    autoTable(doc, {
       startY: y,
       head: [["#", "Subject", "Max Marks", "Marks Obtained", "Grade", "Status"]],
       body: [
