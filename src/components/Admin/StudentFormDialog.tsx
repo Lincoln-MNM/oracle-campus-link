@@ -17,8 +17,9 @@ interface Props {
 
 const departments = ["AI & Data Science", "Computer Science", "Information Technology", "Electronics", "Mechanical", "Civil"];
 const genders = ["Male", "Female", "Other"];
+const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 
-const emptyForm = { name: "", uid: "", rollNo: "", gender: "Male", department: "AI & Data Science", course: "BTech AI & Data Science", semester: 1, email: "", phone: "", password: "", photo_url: "" };
+const emptyForm = { name: "", uid: "", rollNo: "", gender: "Male", department: "AI & Data Science", course: "BTech AI & Data Science", semester: 1, email: "", phone: "", password: "", photo_url: "", father_name: "", mother_name: "", place: "", blood_group: "" };
 
 const StudentFormDialog = ({ open, onOpenChange, student, onSave }: Props) => {
   const [form, setForm] = useState(emptyForm);
