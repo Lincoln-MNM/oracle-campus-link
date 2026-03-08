@@ -59,7 +59,7 @@ const HeroSection = () => {
         <div className="flex flex-col justify-center">
           <div className="hero-title overflow-hidden">
             <span className="mb-3 inline-block rounded-full bg-secondary px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-secondary-foreground">
-              DBMS Project
+              BTech AI & Data Science · DBMS Project
             </span>
           </div>
           <h1 className="hero-title text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
