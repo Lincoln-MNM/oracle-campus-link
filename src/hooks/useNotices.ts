@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { logActivity } from "./useActivityLog";
 
 export interface Notice {
   id: string;
@@ -51,16 +52,20 @@ export function useNotices() {
 
   const addNotice = useCallback((data: Omit<Notice, "id" | "created_at">) => {
     setNotices((prev) => {
-      const next = [...prev, { ...data, id: `n-${Date.now()}`, created_at: new Date().toISOString() }];
+      const newId = `n-${Date.now()}`;
+      const next = [...prev, { ...data, id: newId, created_at: new Date().toISOString() }];
       save(next);
+      logActivity({ action: "created", entity: "Notice", entityId: newId, details: `Posted notice: ${data.title}`, user: "admin", role: "admin" });
       return next;
     });
   }, []);
 
   const removeNotice = useCallback((id: string) => {
     setNotices((prev) => {
+      const notice = prev.find((n) => n.id === id);
       const next = prev.filter((n) => n.id !== id);
       save(next);
+      logActivity({ action: "deleted", entity: "Notice", entityId: id, details: `Removed notice: ${notice?.title || id}`, user: "admin", role: "admin" });
       return next;
     });
   }, []);

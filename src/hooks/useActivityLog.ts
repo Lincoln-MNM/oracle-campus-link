@@ -32,20 +32,37 @@ function saveLogs(logs: ActivityLog[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
 }
 
+/** Standalone logger callable from anywhere (not just React components) */
+export function logActivity(entry: Omit<ActivityLog, "id" | "timestamp">) {
+  const logs = loadLogs();
+  const log: ActivityLog = {
+    ...entry,
+    id: nextId++,
+    timestamp: new Date().toISOString(),
+  };
+  const next = [...logs, log];
+  saveLogs(next);
+  // Dispatch a storage event so the ActivityLogPage can pick it up
+  window.dispatchEvent(new Event("activity-log-updated"));
+}
+
 export function useActivityLog() {
   const [logs, setLogs] = useState<ActivityLog[]>(loadLogs);
 
+  // Listen for updates from other hooks
+  const refresh = useCallback(() => {
+    setLogs(loadLogs());
+  }, []);
+
+  // Subscribe to custom event
+  useState(() => {
+    window.addEventListener("activity-log-updated", refresh);
+    return () => window.removeEventListener("activity-log-updated", refresh);
+  });
+
   const addLog = useCallback((entry: Omit<ActivityLog, "id" | "timestamp">) => {
-    setLogs((prev) => {
-      const log: ActivityLog = {
-        ...entry,
-        id: nextId++,
-        timestamp: new Date().toISOString(),
-      };
-      const next = [...prev, log];
-      saveLogs(next);
-      return next;
-    });
+    logActivity(entry);
+    setLogs(loadLogs());
   }, []);
 
   const clearLogs = useCallback(() => {

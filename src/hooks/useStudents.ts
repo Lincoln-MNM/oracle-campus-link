@@ -1,9 +1,10 @@
 import { useState, useCallback } from "react";
+import { logActivity } from "./useActivityLog";
 
 export interface Student {
   student_id: number;
-  uid: string;        // UID001–UID050
-  rollNo: string;     // U2408001–U2408050
+  uid: string;
+  rollNo: string;
   name: string;
   gender: string;
   department: string;
@@ -72,7 +73,6 @@ const studentNames: { name: string; gender: string }[] = [
 ];
 
 function makeSemester(i: number): number {
-  // Distribute across semesters 1-8
   return (i % 8) + 1;
 }
 
@@ -93,7 +93,7 @@ const sampleStudents: Student[] = studentNames.map(({ name, gender }, i) => {
     email: `${firstName}.${lastName}@student.edu`,
     phone: `98765${String(43210 + i).slice(-5)}`,
     password: `studentUID${padded}`,
-    registered: true, // All 50 are pre-registered and can login
+    registered: true,
   };
 });
 
@@ -102,7 +102,6 @@ function loadStudents(): Student[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      // Migration: if old data without rollNo or uid format changed, replace
       if (parsed.length > 0 && (!parsed[0].rollNo || !parsed[0].uid?.startsWith("UID"))) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleStudents));
         return sampleStudents;
@@ -129,8 +128,10 @@ export function useStudents() {
   const addStudent = useCallback((data: Omit<Student, "student_id">) => {
     setStudents((prev) => {
       const maxId = prev.reduce((m, s) => Math.max(m, s.student_id), 0);
-      const next = [...prev, { ...data, student_id: maxId + 1 }];
+      const newId = maxId + 1;
+      const next = [...prev, { ...data, student_id: newId }];
       saveStudents(next);
+      logActivity({ action: "created", entity: "Student", entityId: String(newId), details: `Added student ${data.name}`, user: "admin", role: "admin" });
       return next;
     });
   }, []);
@@ -139,14 +140,17 @@ export function useStudents() {
     setStudents((prev) => {
       const next = prev.map((s) => (s.student_id === updated.student_id ? updated : s));
       saveStudents(next);
+      logActivity({ action: "updated", entity: "Student", entityId: String(updated.student_id), details: `Updated student ${updated.name}`, user: "admin", role: "admin" });
       return next;
     });
   }, []);
 
   const removeStudent = useCallback((id: number) => {
     setStudents((prev) => {
+      const student = prev.find((s) => s.student_id === id);
       const next = prev.filter((s) => s.student_id !== id);
       saveStudents(next);
+      logActivity({ action: "deleted", entity: "Student", entityId: String(id), details: `Removed student ${student?.name || id}`, user: "admin", role: "admin" });
       return next;
     });
   }, []);

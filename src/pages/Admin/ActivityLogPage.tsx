@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Shield, Clock, Trash2, Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
