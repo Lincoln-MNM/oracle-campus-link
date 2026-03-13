@@ -23,6 +23,7 @@ import LeaveApprovalsPage from "./pages/Admin/LeaveApprovalsPage";
 import NoticesPage from "./pages/Admin/NoticesPage";
 import CalendarPage from "./pages/Admin/CalendarPage";
 import FeeManagementPage from "./pages/Admin/FeeManagementPage";
+import SeatingPlanPage from "./pages/Admin/SeatingPlanPage";
 import StudentDashboard from "./pages/Student/StudentDashboard";
 import DevelopersPage from "./pages/Developers/DevelopersPage";
 import NotFound from "./pages/NotFound";
