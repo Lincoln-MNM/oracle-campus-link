@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, Users, BookOpen, ClipboardList, BarChart3, LogOut, GraduationCap, Shield, ScrollText,
-  CalendarDays, Megaphone, DollarSign, ClipboardCheck, FileText as LeaveIcon, Code2,
+  CalendarDays, Megaphone, DollarSign, ClipboardCheck, FileText as LeaveIcon, Code2, Armchair,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useNavigate, useLocation } from "react-router-dom";
