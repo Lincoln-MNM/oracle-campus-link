@@ -980,6 +980,11 @@ const StudentDashboard = () => {
               )}
             </div>
           </TabsContent>
+
+          {/* SEATING TAB */}
+          <TabsContent value="seating" className="space-y-4">
+            <StudentSeatingTab studentUid={currentStudent?.uid} />
+          </TabsContent>
         </Tabs>
       </main>
 
