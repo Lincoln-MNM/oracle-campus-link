@@ -317,6 +317,7 @@ const StudentDashboard = () => {
             <TabsTrigger value="notices"><Megaphone className="mr-1 h-3.5 w-3.5" /> Notices</TabsTrigger>
             <TabsTrigger value="calendar"><CalendarDays className="mr-1 h-3.5 w-3.5" /> Calendar</TabsTrigger>
             <TabsTrigger value="fees"><DollarSign className="mr-1 h-3.5 w-3.5" /> Fees</TabsTrigger>
+            <TabsTrigger value="seating"><Armchair className="mr-1 h-3.5 w-3.5" /> My Seats</TabsTrigger>
           </TabsList>
 
           {/* PROFILE TAB */}
