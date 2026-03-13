@@ -23,6 +23,7 @@ import LeaveApprovalsPage from "./pages/Admin/LeaveApprovalsPage";
 import NoticesPage from "./pages/Admin/NoticesPage";
 import CalendarPage from "./pages/Admin/CalendarPage";
 import FeeManagementPage from "./pages/Admin/FeeManagementPage";
+import SeatingPlanPage from "./pages/Admin/SeatingPlanPage";
 import StudentDashboard from "./pages/Student/StudentDashboard";
 import DevelopersPage from "./pages/Developers/DevelopersPage";
 import NotFound from "./pages/NotFound";
@@ -61,6 +62,7 @@ const App = () => (
                 <Route path="notices" element={<NoticesPage />} />
                 <Route path="calendar" element={<CalendarPage />} />
                 <Route path="fees" element={<FeeManagementPage />} />
+                <Route path="seating" element={<SeatingPlanPage />} />
                 <Route path="reports" element={<ReportsPage />} />
                 <Route path="logs" element={<ActivityLogPage />} />
               </Route>

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   GraduationCap, BookOpen, Award, TrendingUp, ClipboardList, LogOut, Megaphone, CalendarDays, Download,
   DollarSign, ClipboardCheck, FileText, Clock, CheckCircle, XCircle, Send, CalendarIcon, Filter, TableIcon,
-  User, MapPin, Droplets, Phone, Mail, Hash, Save, Pencil,
+  User, MapPin, Droplets, Phone, Mail, Hash, Save, Pencil, Armchair,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -35,6 +35,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import StudentSeatingTab from "@/components/Student/StudentSeatingTab";
 
 function getGradeLabel(marks: number) {
   if (marks >= 90) return "A+";
@@ -317,6 +318,7 @@ const StudentDashboard = () => {
             <TabsTrigger value="notices"><Megaphone className="mr-1 h-3.5 w-3.5" /> Notices</TabsTrigger>
             <TabsTrigger value="calendar"><CalendarDays className="mr-1 h-3.5 w-3.5" /> Calendar</TabsTrigger>
             <TabsTrigger value="fees"><DollarSign className="mr-1 h-3.5 w-3.5" /> Fees</TabsTrigger>
+            <TabsTrigger value="seating"><Armchair className="mr-1 h-3.5 w-3.5" /> My Seats</TabsTrigger>
           </TabsList>
 
           {/* PROFILE TAB */}
@@ -979,6 +981,11 @@ const StudentDashboard = () => {
               )}
             </div>
           </TabsContent>
+
+          {/* SEATING TAB */}
+          <TabsContent value="seating" className="space-y-4">
+            <StudentSeatingTab studentUid={student?.uid} />
+          </TabsContent>
         </Tabs>
       </main>
 
@@ -1019,3 +1026,4 @@ const StudentDashboard = () => {
 };
 
 export default StudentDashboard;
+
